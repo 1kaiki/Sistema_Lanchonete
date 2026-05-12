@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Image } from 'react-native';
 import { Button } from 'react-native-paper';
 
 
-export default function TelaInicial() {
+export default function EscolhaLogin() {
   return (
     <View style={styles.container}>
 
@@ -20,12 +20,15 @@ export default function TelaInicial() {
       
       <View style={styles.baixo}>
         <Button mode="contained" style={styles.button}>
-          Cadastrar
+          Garçom
         </Button>
 
         <Button mode="contained" style={styles.button}>
-          Logar
-          
+          Atendente
+        </Button>
+
+        <Button mode="contained" style={styles.button}>
+          Gerente
         </Button>
       </View>
 

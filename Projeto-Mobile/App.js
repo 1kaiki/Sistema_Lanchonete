@@ -1,10 +1,11 @@
 import { Provider as PaperProvider } from 'react-native-paper';
-import TelaInicial from './Restaurante/TelaInicial';
+import EscolhaLogin from './assets/Login/EscolhaLogin';
+
 
 export default function App() {
   return (
     <PaperProvider>
-      <TelaInicial />
+      <EscolhaLogin/>
     </PaperProvider>
   );
 }
