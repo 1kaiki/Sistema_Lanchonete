@@ -12,7 +12,7 @@ export default function TelaInicial() {
 
       <View style={styles.meio}>
         <Image
-          source={require('../Sources/restaurante.png')}
+          source={require('../Sources/restaurante.jpeg')}
           style={styles.logo}
         />
       </View>
@@ -22,6 +22,8 @@ export default function TelaInicial() {
         <Button mode="contained" style={styles.button}>
           Cadastrar
         </Button>
+
+        {/* tirar o botão de cadastrar */}
 
         <Button mode="contained" style={styles.button}>
           Logar
