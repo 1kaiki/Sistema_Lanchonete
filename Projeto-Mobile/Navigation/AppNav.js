@@ -1,5 +1,4 @@
 import { NavigationContainer } from '@react-navigation/native';
-
 import GerenteNav from './GerenteNav';
 
 export default function AppNav() {
@@ -8,5 +7,6 @@ export default function AppNav() {
         <NavigationContainer>
             <GerenteNav/>
         </NavigationContainer>
+
     );
 }

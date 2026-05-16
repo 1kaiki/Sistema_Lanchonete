@@ -26,10 +26,16 @@ export default function TelaGerente({navigation}) {
 
             {/* botão que fica no centro */}
             <View style={styles.ViweButtonCentral}>
-                <Button mode="contained" style={styles.ButtonCentraL} icon="silverware-fork-knife"
-                        onPress={() =>
-                                navigation.navigate('VisualizacaoMesa')
-                }>
+                
+                <Button
+                 mode="contained"
+                style={styles.ButtonCentraL} 
+                icon="silverware-fork-knife"
+                
+                onPress={() =>
+                    navigation.navigate("VisualizacaoMesa")
+                    }
+                >
                     Visualização<br></br> das Mesas
                 </Button>
             </View>

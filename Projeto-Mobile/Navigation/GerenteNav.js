@@ -1,9 +1,8 @@
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
-import TelaGerente from '../Screens/Gerente/TelaGerente';
-import VisualizacaoMesa from '../Screens/Gerente/VisualizacaoMesa';
-import PedidoDiario from '../Screens/Gerente/PedidoDiario';
-import LucroDiario from '../Screens/Gerente/LucroDiario';
+import StackGerente from './StackGerente';
+import Cadastro from '../Screens/Gerente/Funcionarios/Cadastro';
+import Visualizacao from '../Screens/Gerente/Funcionarios/Visualizacao';
 
 const Drawer = createDrawerNavigator();
 
@@ -14,25 +13,27 @@ export default function GerenteNav() {
         <Drawer.Navigator>
 
             <Drawer.Screen
-                name="Início"
-                component={TelaGerente}
+                name="Home"
+                component={StackGerente}
             />
 
             <Drawer.Screen
-                name="Pedidos Diários"
-                component={PedidoDiario}
+                name="VisualizacaoFuncionario"
+                component={Visualizacao}
+                options={{
+                    title: 'Visualização de funcionario'
+                }}
             />
 
             <Drawer.Screen
-                name="Lucro Diário"
-                component={LucroDiario}
-            />
-
-            <Drawer.Screen
-                name="Visualização das Mesas"
-                component={VisualizacaoMesa}
+                name="PedidosDiariosFuncionario"
+                component={Cadastro}
+                options={{
+                    title: 'Cadastro de funcionario'
+                }}
             />
 
         </Drawer.Navigator>
+
     );
 }
