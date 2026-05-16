@@ -12,7 +12,7 @@ export default function EscolhaLogin() {
 
       <View style={styles.meio}>
         <Image
-          source={require('../Sources/restaurante.jpeg')}
+          source={require('../../assets/restaurante.jpeg')}
           style={styles.logo}
         />
       </View>
