@@ -15,18 +15,18 @@ export default function TelaGerente() {
             <View style={styles.ViewBotao}>
 
                 <Button mode="contained" style={styles.Button} icon="clipboard-list">
-                    Pedidos Diários
+                    Pedidos<br></br> Diários
                 </Button>
 
                  <Button mode="contained" style={styles.Button} icon="cash">
-                    Lucro Diário
+                    Lucro Diário<br></br> da empresa
                 </Button>
             </View>
 
             {/* botão que fica no centro */}
             <View style={styles.ViweButtonCentral}>
-                <Button mode="contained" style={styles.ButtonCentraL}>
-                    Visualização das Mesas
+                <Button mode="contained" style={styles.ButtonCentraL} icon="silverware-fork-knife">
+                    Visualização<br></br> das Mesas
                 </Button>
             </View>
         </View>
@@ -58,8 +58,10 @@ ViewBotao: {
 },
 
 Button: {
-    width: 150,
-    borderRadius: 0,
+    width: '45%',
+    maxWidth: 350,
+    minWidth: 160,
+    borderRadius: 30,
     backgroundColor: "#ee9a2dff",
 },
 
@@ -72,6 +74,7 @@ ButtonCentraL: {
     width: 220,
     borderRadius: 0,
     backgroundColor: "#ee9a2dff",
+    borderRadius: 20,
 }
 
 })
