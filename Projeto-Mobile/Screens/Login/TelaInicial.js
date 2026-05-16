@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Image } from 'react-native';
 import { Button } from 'react-native-paper';
 
 
-export default function TelaInicial() {
+export default function TelaInicial({navigation} ) {
   return (
     <View style={styles.container}>
 
@@ -19,15 +19,23 @@ export default function TelaInicial() {
 
       
       <View style={styles.baixo}>
-        <Button mode="contained" style={styles.button}>
+        <Button
+          mode="contained"
+          style={styles.button}
+        >
+
           Cadastrar
         </Button>
 
         {/* tirar o botão de cadastrar */}
 
-        <Button mode="contained" style={styles.button}>
-          Logar
-          
+        <Button 
+        mode="contained" 
+        style={styles.button}
+        onPress={() =>
+            navigation.navigate("GerenteNav")
+          }>
+        Logar
         </Button>
       </View>
 

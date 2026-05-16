@@ -14,14 +14,26 @@ export default function TelaGerente({navigation}) {
             {/* parte dos botoes da pagina */}
             <View style={styles.ViewBotao}>
 
-                <Button mode="contained" style={styles.Button} icon="clipboard-list">
-                    Pedidos<br></br> Diários
+                <Button 
+                mode="contained" 
+                style={styles.Button} 
+                icon="clipboard-list"
+                onPress={() =>
+                navigation.navigate("PedidosDiarios")}>
+                Pedidos<br></br> Diários
+
+
                 </Button>
 
-                 <Button mode="contained" style={styles.Button} icon="cash">
-                        
-                    Lucro Diário<br></br> da empresa
+                <Button 
+                mode="contained" 
+                style={styles.Button} 
+                icon="cash"
+                onPress={() =>
+                navigation.navigate("LucroDiario")}>       
+                Lucro Diário<br></br> da empresa
                 </Button>
+
             </View>
 
             {/* botão que fica no centro */}
