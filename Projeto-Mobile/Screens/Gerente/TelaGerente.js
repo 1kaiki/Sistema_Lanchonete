@@ -2,7 +2,7 @@ import * as React from 'react';
 import { View, Text, StyleSheet } from "react-native";
 import { Button } from 'react-native-paper';
 
-export default function TelaGerente() {
+export default function TelaGerente({navigation}) {
     return(
         <View style={styles.container}>
 
@@ -19,13 +19,17 @@ export default function TelaGerente() {
                 </Button>
 
                  <Button mode="contained" style={styles.Button} icon="cash">
+                        
                     Lucro Diário<br></br> da empresa
                 </Button>
             </View>
 
             {/* botão que fica no centro */}
             <View style={styles.ViweButtonCentral}>
-                <Button mode="contained" style={styles.ButtonCentraL} icon="silverware-fork-knife">
+                <Button mode="contained" style={styles.ButtonCentraL} icon="silverware-fork-knife"
+                        onPress={() =>
+                                navigation.navigate('VisualizacaoMesa')
+                }>
                     Visualização<br></br> das Mesas
                 </Button>
             </View>
