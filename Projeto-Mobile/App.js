@@ -1,12 +1,12 @@
 import { Provider as PaperProvider } from 'react-native-paper';
-import EscolhaLogin from './assets/Login/EscolhaLogin';
 import TelaInicial from './assets/Login/TelaInicial';
+import TelaGerente from './assets/Gerente/TelaGerente'; //so para testar a tela do gerente por enquanto
 
 
 export default function App() {
   return (
     <PaperProvider>
-      <TelaInicial/>
+      <TelaGerente/>
     </PaperProvider>
   );
 }
