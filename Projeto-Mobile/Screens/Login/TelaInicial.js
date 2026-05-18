@@ -33,7 +33,7 @@ export default function TelaInicial({navigation} ) {
         mode="contained" 
         style={styles.button}
         onPress={() =>
-            navigation.navigate("GerenteNav")
+            navigation.navigate("EscolhaLogin")
           }>
         Logar
         </Button>

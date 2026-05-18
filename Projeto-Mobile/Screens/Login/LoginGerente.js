@@ -1,8 +1,8 @@
 import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
-import { Button } from 'react-native-paper';
+import { Button, TextInput } from 'react-native-paper';
 
 
-export default function EscolhaLogin({navigation}) {
+export default function LoginGerente({navigation}) {
   return (
     <ScrollView 
     contentContainerStyle={styles.container}
@@ -11,7 +11,7 @@ export default function EscolhaLogin({navigation}) {
     <View style={styles.container}>
 
       <View style={styles.topo}>
-        <Text style={styles.txt_title}>Restaurante Garcia</Text>
+        <Text style={styles.txt_title}>Login Gerente</Text>
       </View>
 
       <View style={styles.meio}>
@@ -23,28 +23,21 @@ export default function EscolhaLogin({navigation}) {
 
       
       <View style={styles.baixo}>
-        <Button mode="contained" style={styles.button} onPress={() =>
-            navigation.navigate("LoginAtendente")
-          }>
-          Atendente
+        <TextInput style={styles.input}
+        placeholder='Login'
+            
+        />
+        <TextInput
+        placeholder='Senha'
+            
+        />
+
+        <Button mode="contained" style={styles.button}>
+          Logar
         </Button>
 
-        <Button mode="contained" style={styles.button} onPress={() =>
-            navigation.navigate("LoginCozinha")
-          }>
-          Cozinha
-        </Button>
-
-        <Button mode="contained" style={styles.button} onPress={() =>
-            navigation.navigate("LoginGerente")
-          }>
-          Gerente
-        </Button>
-
-        <Button mode="contained" style={styles.button} onPress={() =>
-            navigation.navigate("LoginGarcom")
-          }>
-          Garçom
+        <Button mode="contained" style={styles.button} onPress={() => navigation.navigate('EscolhaLogin')}>
+            Voltar
         </Button>
       </View>
 
@@ -72,7 +65,6 @@ meio: {
 
 baixo: {
   alignItems: 'center',
-  gap: 10, // separa os botões
 },
 
   txt_title: {
@@ -93,5 +85,8 @@ baixo: {
   },
   ScrollView:{
     flex: 1
+  },
+  input:{
+    marginBottom: 5
   }
 });

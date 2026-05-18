@@ -4,6 +4,10 @@ import TelaGerente from '../Screens/Gerente/TelaGerente';
 import VisualizacaoMesa from '../Screens/Gerente/VisualizacaoMesa';
 import PedidoDiario from '../Screens/Gerente/PedidoDiario';
 import LucroDiario from '../Screens/Gerente/LucroDiario';
+import LoginGarcom from '../Screens/Login/LoginGarcom';
+import LoginAtendente from '../Screens/Login/LoginAtendente';
+import LoginCozinha from '../Screens/Login/LoginCozinha';
+import LoginGerente from '../Screens/Login/LoginGerente';
 
 const Stack = createNativeStackNavigator();
 
@@ -32,6 +36,9 @@ export default function StackGerente() {
                 name="LucroDiario"
                 component={LucroDiario}
             />
+
+
+            
 
         </Stack.Navigator>
 
