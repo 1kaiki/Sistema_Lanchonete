@@ -8,6 +8,7 @@ import LoginGarcom from '../Screens/Login/LoginGarcom';
 import LoginGerente from '../Screens/Login/LoginGerente';
 import LoginAtendente from '../Screens/Login/LoginAtendente';
 import LoginCozinha from '../Screens/Login/LoginCozinha';
+import CadastroMesasGarcom from '../Screens/Garcom/CadastroMesasGarcom'
 import Alacarte from '../Screens/Cardapio/Alacarte';
 import Bebidas from '../Screens/Cardapio/Bebidas';
 import Lanches from '../Screens/Cardapio/Lanches';
@@ -50,33 +51,37 @@ export default function AppRoutes() {
                 <Stack.Screen
                     name="LoginAtendente"
                     component={LoginAtendente}
-                    />
+                />
                 
                 <Stack.Screen
                     name="LoginCozinha"
                     component={LoginCozinha}
-                    />
+                />
                 
                 <Stack.Screen
                     name="LoginGerente"
                     component={LoginGerente}
-                    />
+                />
                 <Stack.Screen
                     name="Alacarte"
                     component={Alacarte}
-                    />
+                />
                 <Stack.Screen
                     name="Bebidas"
                     component={Bebidas}
-                    />
+                />
                 <Stack.Screen
                     name="Lanches"
                     component={Lanches}
-                    />
+                />
                 <Stack.Screen
                     name="Tabuas"
                     component={Tabuas}
-                    />
+                />
+                <Stack.Screen
+                    name="TelaGarcom"
+                    component={CadastroMesasGarcom}
+                />
                 
 
             </Stack.Navigator>

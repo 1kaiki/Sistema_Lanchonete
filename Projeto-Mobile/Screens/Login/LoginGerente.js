@@ -1,92 +1,102 @@
-import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
-import { Button, TextInput } from 'react-native-paper';
+import React, { useState } from 'react';
 
+import {
+    View,
+    StyleSheet
+} from 'react-native';
 
-export default function LoginGerente({navigation}) {
-  return (
-    <ScrollView 
-    contentContainerStyle={styles.container}
-    bounces={false}
-    overScrollMode="never">
-    <View style={styles.container}>
+import {
+    TextInput,
+    Button,
+    Text
+} from 'react-native-paper';
 
-      <View style={styles.topo}>
-        <Text style={styles.txt_title}>Login Gerente</Text>
-      </View>
+export default function LoginGerente({ navigation }) {
 
-      <View style={styles.meio}>
-        <Image
-          source={require('../../assets/restaurante.jpeg')}
-          style={styles.logo}
-        />
-      </View>
+    const [email, setEmail] = useState('');
+    const [senha, setSenha] = useState('');
 
-      
-      <View style={styles.baixo}>
-        <TextInput style={styles.input}
-        placeholder='Login'
-            
-        />
-        <TextInput
-        placeholder='Senha'
-            
-        />
+    function logar() {
 
-        <Button mode="contained" style={styles.button}>
-          Logar
-        </Button>
+        if(
+            email === "admin@gmail.com"
+            &&
+            senha === "123456"
+        ) {
 
-        <Button mode="contained" style={styles.button} onPress={() => navigation.navigate('EscolhaLogin')}>
-            Voltar
-        </Button>
-      </View>
+            navigation.navigate("GerenteNav");
 
-    </View>
-    </ScrollView>
-  );
+        }
+
+        else {
+
+            alert("Email ou senha incorretos");
+        }
+
+    }
+
+    return(
+
+        <View style={styles.container}>
+
+            <Text style={styles.titulo}>
+                Login Gerente
+            </Text>
+
+            <TextInput
+                label="Email"
+                value={email}
+                onChangeText={setEmail}
+                style={styles.input}
+            />
+
+            <TextInput
+                label="Senha"
+                secureTextEntry
+                value={senha}
+                onChangeText={setSenha}
+                style={styles.input}
+            />
+
+            <Button
+                mode="contained"
+                style={styles.button}
+
+                onPress={logar}
+            >
+                Entrar
+            </Button>
+
+        </View>
+
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-  flexGrow: 1,
-  backgroundColor: '#e9b67bff',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  paddingVertical: 60,
-},
 
-  topo: {
-  alignItems: 'center',
-},
+    container: {
+        flex: 1,
+        backgroundColor: '#e9b67bff',
+        justifyContent: 'center',
+        padding: 20,
+    },
 
-meio: {
-  alignItems: 'center',
-},
+    titulo: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 30,
+    },
 
-baixo: {
-  alignItems: 'center',
-},
+    input: {
+        marginBottom: 15,
+        backgroundColor: '#fff',
+    },
 
-  txt_title: {
-    fontSize: 30,
-    fontWeight: 'bold',
-  },
+    button: {
+        backgroundColor: '#ee9a2dff',
+        borderRadius: 20,
+        marginTop: 10,
+    },
 
-  logo: {
-  width: 200,
-  height: 200,
-  resizeMode: 'contain',
-},
-
-  button: {
-    width: 250,
-    marginTop: 50,
-    backgroundColor: '#ee9a2dff'
-  },
-  ScrollView:{
-    flex: 1
-  },
-  input:{
-    marginBottom: 5
-  }
 });
