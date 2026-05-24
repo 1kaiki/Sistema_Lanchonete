@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import EscolhaCadastro from '../Screens/Gerente/Funcionarios/EscolhaCadastro';
 
+//TIPO DE CADASTRO QUE VAI QUERER
 import CadastroGarcom from '../Screens/Gerente/Funcionarios/CadastroGarcom';
 import CadastroAtendente from '../Screens/Gerente/Funcionarios/CadastroAtendente';
 import CadastroCozinha from '../Screens/Gerente/Funcionarios/CadastroCozinha';
@@ -13,7 +14,7 @@ export default function StackCadastro() {
     return(
 
         <Stack.Navigator>
-
+            {/*ESCOLHA DOS CADASTRO COM NAVEGACAO STACK, GARCOM, ATENDENTE, COZINHA */}
             <Stack.Screen
                 name="EscolhaCadastro"
                 component={EscolhaCadastro}

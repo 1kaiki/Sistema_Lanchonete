@@ -1,12 +1,13 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+//TELAS DO GERENTE 
 import TelaGerente from '../Screens/Gerente/TelaGerente';
 import VisualizacaoMesa from '../Screens/Gerente/VisualizacaoMesa';
 import PedidoDiario from '../Screens/Gerente/PedidoDiario';
 import LucroDiario from '../Screens/Gerente/LucroDiario';
-
 import EscolhaCadastro from '../Screens/Gerente/Funcionarios/EscolhaCadastro';
 
+//TIPOS DE CADASTRO
 import CadastroGarcom from '../Screens/Gerente/Funcionarios/CadastroGarcom';
 import CadastroAtendente from '../Screens/Gerente/Funcionarios/CadastroAtendente';
 import CadastroCozinha from '../Screens/Gerente/Funcionarios/CadastroCozinha';

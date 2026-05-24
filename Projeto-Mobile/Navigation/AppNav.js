@@ -1,14 +1,22 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import TelaInicial from '../Screens/Login/TelaInicial';
+
+//IMPORT GERENTE
 import GerenteNav from './GerenteNav'
+
+//IMPORT GARCOM
+import CadastroMesasGarcom from '../Screens/Garcom/CadastroMesasGarcom'
+
+//IMPORT DOS LOGINS
+import TelaInicial from '../Screens/Login/TelaInicial';
 import EscolhaLogin from '../Screens/Login/EscolhaLogin';
 import LoginGarcom from '../Screens/Login/LoginGarcom';
 import LoginGerente from '../Screens/Login/LoginGerente';
 import LoginAtendente from '../Screens/Login/LoginAtendente';
 import LoginCozinha from '../Screens/Login/LoginCozinha';
-import CadastroMesasGarcom from '../Screens/Garcom/CadastroMesasGarcom'
+
+//MENU DE OPCOES
 import Alacarte from '../Screens/Cardapio/Alacarte';
 import Bebidas from '../Screens/Cardapio/Bebidas';
 import Lanches from '../Screens/Cardapio/Lanches';
