@@ -1,59 +1,127 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView} from "react-native";
-import { Button, Card } from "react-native-paper";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { Card } from "react-native-paper";
+import { NavigationContainer } from "@react-navigation/native";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import { lanches } from "../../db/DBlanches";
+import { porcoes } from "../../db/DBporçoes";
+import { bebidas } from "../../db/DBbebidas";
+import { tabuas } from "../../db/DBtabuas";
 
-export default function Lanches({navigation}) {
-  const comidas = [
-    { id: 1, nome: "", descricao: "", valor: "" },
-    { id: 2, nome: "", descricao: "", valor: "" },
-    { id: 3, nome: "", descricao: "", valor: "" },
-    { id: 4, nome: "", descricao: "", valor: "" },
-    { id: 5, nome: "", descricao: "", valor: "" },
-    { id: 6, nome: "", descricao: "", valor: "" },
-  ];
+const Drawer = createDrawerNavigator();
 
+function LanchesContent() {
   return (
     <View style={styles.container}>
-      <View style={styles.menu}>
-        <TouchableOpacity style={styles.botaoAtivo} onPress={() => navigation.navigate("Alacarte")}>
-                          <Text style={styles.textoBotaoAtivo} >CARDÁPIO{"\n"}ALACARTE</Text>
-                        </TouchableOpacity>
-                
-                        <TouchableOpacity style={styles.botao} onPress={() => navigation.navigate("Bebidas")}>
-                          <Text style={styles.textoBotao}>CARDÁPIO{"\n"}BEBIDAS</Text>
-                        </TouchableOpacity>
-                         <TouchableOpacity style={styles.botaoAtivo} onPress={() => navigation.navigate("Tabuas")}>
-                          <Text style={styles.textoBotaoAtivo}>CARDÁPIO{"\n"}TABUAS</Text>
-                        </TouchableOpacity>
-                
-                         <TouchableOpacity style={styles.botaoAtivo} onPress={() => navigation.navigate("Lanches")}>
-                          <Text style={styles.textoBotaoAtivo}>CARDÁPIO{"\n"}LANCHES</Text>
-                        </TouchableOpacity>
+      <View style={styles.conteudo}>
+        <Text style={styles.titulo}>LANCHES</Text>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.cardsContainer}>
+            {lanches.map((pess) => (
+              <Card key={pess.id} style={styles.card}>
+                <Card.Cover source={{ uri: pess.image }} style={styles.cardImage} />
+                <Card.Content style={styles.cardContent}>
+                  <Text style={[styles.txt, styles.itemName]}>{pess.name}</Text>
+                  <Text style={[styles.txt, styles.itemDescription]}>{pess.description}</Text>
+                  <Text style={[styles.txt, styles.itemPrice]}>{pess.price}</Text>
+                </Card.Content>
+              </Card>
+            ))}
+          </View>
+        </ScrollView>
       </View>
-
-      
-        <View style={styles.conteudo}>
-  <Text style={styles.titulo}>LANCHES</Text>
-
-  <ScrollView showsVerticalScrollIndicator={false}>
-    <View style={styles.cardsContainer}>
-      {comidas.map((pess) => (
-        <Card key={pess.id} style={styles.card}>
-          <Card.Content style={styles.cards}>
-            <Text style={styles.txt}>{pess.nome}</Text>
-            <Text style={styles.txt}>{pess.descricao}</Text>
-            <Text style={styles.txt}>{pess.valor}</Text>
-          </Card.Content>
-        </Card>
-      ))}
     </View>
-    
-  </ScrollView>
-</View>
+  );
+}
 
-</View>
+function AlacarteContent() {
+  return (
+    <View style={styles.container}>
+      <View style={styles.conteudo}>
+        <Text style={styles.titulo}>PORÇÕES</Text>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.cardsContainer}>
+            {porcoes.map((pess) => (
+              <Card key={pess.id} style={styles.card}>
+                <Card.Cover source={{ uri: pess.image }} style={styles.cardImage} />
+                <Card.Content style={styles.cardContent}>
+                  <Text style={[styles.txt, styles.itemName]}>{pess.name}</Text>
+                  <Text style={[styles.txt, styles.itemDescription]}>{pess.description}</Text>
+                  <Text style={[styles.txt, styles.itemPrice]}>{pess.price}</Text>
+                </Card.Content>
+              </Card>
+            ))}
+          </View>
+        </ScrollView>
+      </View>
+    </View>
+  );
+}
 
-);
+function BebidasContent() {
+  return (
+    <View style={styles.container}>
+      <View style={styles.conteudo}>
+        <Text style={styles.titulo}>BEBIDAS</Text>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.cardsContainer}>
+            {bebidas.map((pess) => (
+              <Card key={pess.id} style={styles.card}>
+                <Card.Cover source={{ uri: pess.image }} style={styles.cardImage} />
+                <Card.Content style={styles.cardContent}>
+                  <Text style={[styles.txt, styles.itemName]}>{pess.name}</Text>
+                  <Text style={[styles.txt, styles.itemDescription]}>{pess.description}</Text>
+                  <Text style={[styles.txt, styles.itemPrice]}>{pess.price}</Text>
+                </Card.Content>
+              </Card>
+            ))}
+          </View>
+        </ScrollView>
+      </View>
+    </View>
+  );
+}
+
+function TabuasContent() {
+  return (
+    <View style={styles.container}>
+      <View style={styles.conteudo}>
+        <Text style={styles.titulo}>TÁBUAS</Text>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.cardsContainer}>
+            {tabuas.map((pess) => (
+              <Card key={pess.id} style={styles.card}>
+                <Card.Cover source={{ uri: pess.image }} style={styles.cardImage} />
+                <Card.Content style={styles.cardContent}>
+                  <Text style={[styles.txt, styles.itemName]}>{pess.name}</Text>
+                  <Text style={[styles.txt, styles.itemDescription]}>{pess.description}</Text>
+                  <Text style={[styles.txt, styles.itemPrice]}>{pess.price}</Text>
+                </Card.Content>
+              </Card>
+            ))}
+          </View>
+        </ScrollView>
+      </View>
+    </View>
+  );
+}
+
+export default function Lanches() {
+  return (
+    <NavigationContainer>
+      <Drawer.Navigator
+        screenOptions={{
+          drawerLabelStyle: { fontSize: 16 },
+          drawerStyle: { backgroundColor: "#D9D9D9", width: 240 },
+        }}
+      >
+        <Drawer.Screen name="LanchesScreen" component={LanchesContent} options={{ title: "Lanches" }} />
+        <Drawer.Screen name="AlacarteScreen" component={AlacarteContent} options={{ title: "Porções" }} />
+        <Drawer.Screen name="BebidasScreen" component={BebidasContent} options={{ title: "Bebidas" }} />
+        <Drawer.Screen name="TabuasScreen" component={TabuasContent} options={{ title: "Tábuas" }} />
+      </Drawer.Navigator>
+    </NavigationContainer>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -110,18 +178,43 @@ const styles = StyleSheet.create({
   },
 
   card: {
-  width: "43%",
-  height: "70%",
-  backgroundColor: "#D9D9D9",
-  margin: 10,
-  padding: 20,
-},
+    width: "44%",
+    minHeight: 320,
+    backgroundColor: "#D9D9D9",
+    margin: 8,
+    padding: 0,
+    overflow: "hidden",
+  },
+
+  cardImage: {
+    height: 140,
+  },
+
+  cardContent: {
+    padding: 12,
+  },
+
+  itemName: {
+    fontSize: 18,
+    fontWeight: "700",
+    marginBottom: 8,
+  },
+
+  itemDescription: {
+    fontSize: 14,
+    marginBottom: 8,
+  },
+
+  itemPrice: {
+    fontSize: 16,
+    color: "#333",
+  },
 
   cardsContainer: {
-  flexDirection: "row",
-  flexWrap: "wrap",
-  justifyContent: "center",
-},
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+  },
 
   texto: {
     fontSize: 26,
