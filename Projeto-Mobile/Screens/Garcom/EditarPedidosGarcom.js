@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ScrollView, Alert } from 'react-native';
 import { useState } from 'react';
-import { database } from '../firebaseConfig';
+import { database } from '../Services/FirebaseConfig';
 import { collection, addDoc } from 'firebase/firestore';
 
 export default function EditarPedidosGarcom({ navigation }) {
@@ -15,7 +15,7 @@ export default function EditarPedidosGarcom({ navigation }) {
         }
         try {
             // TODO: Defina o nome da coleção no Firebase conforme necessário
-            // Este envio direciona o pedido para a VisualizarPedidosCozinha
+            // envia para a VisualizarPedidosCozinha
             await addDoc(collection(database, 'pedidosCozinha'), {
                 numeroMesa,
                 pedido: novoPedido,
@@ -35,11 +35,9 @@ export default function EditarPedidosGarcom({ navigation }) {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View style={styles.container}>
 
-                {/* Logo do Restaurante */}
                 <View style={styles.logoContainer}>
-                    {/* TODO: Substitua a URI pelo link da imagem do restaurante */}
                     <Image
-                        source={{ uri: 'URL_DA_IMAGEM_DO_RESTAURANTE' }}
+                        source={{ uri: '../../assets/restaurante.jpeg' }}
                         style={styles.logo}
                         resizeMode="contain"
                     />

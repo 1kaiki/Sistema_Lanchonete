@@ -1,5 +1,5 @@
 import AppNav from './Navigation/AppNav';
-import EditarPedidos from './Screens/Garcom/EditarPedidos';
+import EditarPedidosGarcom from './Screens/Garcom/EditarPedidosGarcom';
 import LoginGarcom from './Screens/Login/LoginGarcom';
 
 
