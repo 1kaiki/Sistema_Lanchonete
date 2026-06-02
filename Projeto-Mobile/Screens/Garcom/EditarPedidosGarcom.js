@@ -3,33 +3,31 @@ import { useState } from 'react';
 import { database } from '../firebaseConfig';
 import { collection, addDoc } from 'firebase/firestore';
 
-export default function CadastroMesasGarcom({ navigation }) {
+export default function EditarPedidosGarcom({ navigation }) {
 
     const [numeroMesa, setNumeroMesa] = useState('');
-    const [pedido, setPedido] = useState('');
-    const [observacoes, setObservacoes] = useState('');
+    const [novoPedido, setNovoPedido] = useState('');
 
     const EnviarPedido = async () => {
-        if (!numeroMesa || !pedido) {
-            Alert.alert('Atenção', 'Preencha o número da mesa e o pedido.');
+        if (!numeroMesa || !novoPedido) {
+            Alert.alert('Atenção', 'Preencha o número da mesa e o novo pedido.');
             return;
         }
         try {
             // TODO: Defina o nome da coleção no Firebase conforme necessário
-            await addDoc(collection(database, 'mesas'), {
+            // Este envio direciona o pedido para a VisualizarPedidosCozinha
+            await addDoc(collection(database, 'pedidosCozinha'), {
                 numeroMesa,
-                pedido,
-                observacoes,
-                chamouGarcom: false,
+                pedido: novoPedido,
+                status: 'pendente',
                 criadoEm: new Date()
             });
-            Alert.alert('Sucesso', 'Pedido enviado!');
+            Alert.alert('Sucesso', 'Pedido enviado para a cozinha!');
             setNumeroMesa('');
-            setPedido('');
-            setObservacoes('');
+            setNovoPedido('');
         } catch (error) {
             Alert.alert('Erro', 'Não foi possível enviar o pedido.');
-            console.log('Erro ao cadastrar mesa:', error);
+            console.log('Erro ao enviar pedido:', error);
         }
     };
 
@@ -47,7 +45,7 @@ export default function CadastroMesasGarcom({ navigation }) {
                     />
                 </View>
 
-                <Text style={styles.titulo}>Cadastre a nova mesa</Text>
+                <Text style={styles.titulo}>GERENCIE OS PEDIDOS</Text>
 
                 <TextInput
                     placeholder="NÚMERO MESA"
@@ -59,19 +57,11 @@ export default function CadastroMesasGarcom({ navigation }) {
                 />
 
                 <TextInput
-                    placeholder="PEDIDO"
+                    placeholder="NOVO PEDIDO"
                     placeholderTextColor="#999"
-                    value={pedido}
-                    onChangeText={setPedido}
+                    value={novoPedido}
+                    onChangeText={setNovoPedido}
                     style={styles.txtInput}
-                />
-
-                <TextInput
-                    placeholder="OBSERVAÇÕES"
-                    placeholderTextColor="#999"
-                    value={observacoes}
-                    onChangeText={setObservacoes}
-                    style={[styles.txtInput, styles.txtInputFocused]}
                 />
 
                 <TouchableOpacity style={styles.botaoEnviar} onPress={EnviarPedido}>
@@ -124,10 +114,6 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         fontSize: 14,
         color: '#333',
-    },
-    txtInputFocused: {
-        borderWidth: 2,
-        borderColor: '#1565C0',
     },
     botaoEnviar: {
         backgroundColor: '#e53935',
