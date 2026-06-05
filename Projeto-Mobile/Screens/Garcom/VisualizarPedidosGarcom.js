@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { useState, useEffect } from 'react';
-import { database } from '../firebaseConfig';
+import { database } from '../../Services/FirebaseConfig';
 import { collection, getDocs, doc, onSnapshot } from 'firebase/firestore';
 
 export default function VisualizarPedidosGarcom({ navigation, route }) {
