@@ -6,6 +6,7 @@ import VisualizacaoMesa from '../Screens/Gerente/VisualizacaoMesa';
 import PedidoDiario from '../Screens/Gerente/PedidoDiario';
 import LucroDiario from '../Screens/Gerente/LucroDiario';
 import EscolhaCadastro from '../Screens/Gerente/Funcionarios/EscolhaCadastro';
+import EditarFuncionario from '../Screens/Gerente/Funcionarios/EditarFuncionario';
 
 //TIPOS DE CADASTRO
 import CadastroGarcom from '../Screens/Gerente/Funcionarios/CadastroGarcom';
@@ -70,6 +71,11 @@ export default function StackGerente() {
                 options={{
                     title: 'Cadastro Cozinha'
                 }}
+            />
+
+            <Stack.Screen
+                name="EditarFuncionario"
+                component={EditarFuncionario}
             />
 
         </Stack.Navigator>

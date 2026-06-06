@@ -1,13 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
-import { Card, Text } from 'react-native-paper';
 
-import { getFirestore, collection, getDocs } from 'firebase/firestore';
+import {
+    Card,
+    Text,
+    Button
+} from 'react-native-paper';
+
+import {
+    getFirestore,
+    collection,
+    getDocs,
+    deleteDoc,
+    doc
+} from 'firebase/firestore';
+
 import app from '../../../Services/FirebaseConfig';
 
 const db = getFirestore(app);
 
-export default function Visualizacao() {
+export default function Visualizacao({ navigation }) {
 
     const [funcionarios, setFuncionarios] = useState([]);
 
@@ -21,11 +33,11 @@ export default function Visualizacao() {
 
             let lista = [];
 
-            querySnapshot.forEach((doc) => {
+            querySnapshot.forEach((documento) => {
 
                 lista.push({
-                    id: doc.id,
-                    ...doc.data()
+                    id: documento.id,
+                    ...documento.data()
                 });
 
             });
@@ -40,8 +52,30 @@ export default function Visualizacao() {
 
     }
 
+    async function excluirFuncionario(id) {
+
+        try {
+
+            await deleteDoc(
+                doc(db, "funcionarios", id)
+            );
+
+            alert("Funcionário excluído com sucesso!");
+
+            carregarFuncionarios();
+
+        } catch(error) {
+
+            console.log(error);
+
+        }
+
+    }
+
     useEffect(() => {
+
         carregarFuncionarios();
+
     }, []);
 
     return (
@@ -51,6 +85,7 @@ export default function Visualizacao() {
             <FlatList
                 data={funcionarios}
                 keyExtractor={(item) => item.id}
+
                 renderItem={({ item }) => (
 
                     <Card style={styles.card}>
@@ -77,6 +112,37 @@ export default function Visualizacao() {
                                 Telefone: {item.telefone}
                             </Text>
 
+                            <View style={styles.areaBotoes}>
+
+                                <Button
+                                    mode="contained"
+                                    style={styles.botaoEditar}
+
+                                    onPress={() =>
+                                        navigation.navigate(
+                                            "EditarFuncionario",
+                                            {
+                                                funcionario: item
+                                            }
+                                        )
+                                    }
+                                >
+                                    Editar
+                                </Button>
+
+                                <Button
+                                    mode="contained"
+                                    style={styles.botaoExcluir}
+
+                                    onPress={() =>
+                                        excluirFuncionario(item.id)
+                                    }
+                                >
+                                    Excluir
+                                </Button>
+
+                            </View>
+
                         </Card.Content>
 
                     </Card>
@@ -100,6 +166,22 @@ const styles = StyleSheet.create({
 
     card: {
         marginBottom: 10,
+    },
+
+    areaBotoes: {
+        flexDirection: 'row',
+        marginTop: 15,
+        gap: 10,
+    },
+
+    botaoEditar: {
+        flex: 1,
+        backgroundColor: '#2196F3',
+    },
+
+    botaoExcluir: {
+        flex: 1,
+        backgroundColor: '#F44336',
     }
 
 });

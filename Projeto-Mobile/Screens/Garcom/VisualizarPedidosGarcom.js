@@ -33,7 +33,7 @@ export default function VisualizarPedidosGarcom({ navigation, route }) {
     }, []);
 
     return (
-        <ScrollView style={styles.scrollContainer}>
+        <ScrollView style={styles.scrollContainer}> 
             <View style={styles.container}>
 
                 <Text style={styles.titulo}>MESAS ATENDIDAS</Text>
