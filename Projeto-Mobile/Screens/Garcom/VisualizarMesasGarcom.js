@@ -1,15 +1,13 @@
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
 import { useState, useEffect } from 'react';
 import { database } from '../firebaseConfig';
-import { collection, getDocs, doc, updateDoc, onSnapshot } from 'firebase/firestore';
+import { collection, onSnapshot } from 'firebase/firestore';
 
 export default function VisualizarMesasGarcom({ navigation }) {
 
     const [mesas, setMesas] = useState([]);
 
     useEffect(() => {
-        // TODO: Defina o nome da coleção no Firebase conforme necessário
-        // Usando onSnapshot para atualização em tempo real
         const unsubscribe = onSnapshot(collection(database, 'mesas'), (querySnapshot) => {
             const lista = [];
             querySnapshot.forEach((doc) => {
@@ -20,12 +18,10 @@ export default function VisualizarMesasGarcom({ navigation }) {
             console.log('Erro ao buscar mesas:', error);
         });
 
-        // Limpa o listener ao sair da tela
         return () => unsubscribe();
     }, []);
 
     const VisualizarPedido = (mesa) => {
-        // Navega para a tela de visualizar pedidos passando os dados da mesa
         navigation.navigate('VisualizarPedidos', { mesa });
     };
 
@@ -41,7 +37,6 @@ export default function VisualizarMesasGarcom({ navigation }) {
                         <Text style={styles.mesaNome}>MESA {mesa.numeroMesa}</Text>
 
                         <View style={styles.mesaRow}>
-                            {/* Card da mesa com status e botão */}
                             <View style={[styles.mesaCard, mesa.id === mesas[0]?.id && styles.mesaCardSelected]}>
                                 <Text style={styles.statusTexto}>
                                     STATUS: {mesa.status || 'Aguardando'}
@@ -54,13 +49,28 @@ export default function VisualizarMesasGarcom({ navigation }) {
                                 </TouchableOpacity>
                             </View>
 
-                            {/* Botão vermelho/verde - muda conforme chamada do garçom */}
-                            <TouchableOpacity
-                                style={[
-                                    styles.botaoChamada,
-                                    { backgroundColor: mesa.chamouGarcom ? '#e53935' : '#43a047' }
-                                ]}
-                            />
+                            {/* Coluna direita: indicador chamada garçom + indicador pedido pronto da cozinha */}
+                            <View style={styles.colunaIndicadores}>
+
+                                {/* Botão vermelho/verde original - chamada do garçom */}
+                                <TouchableOpacity
+                                    style={[
+                                        styles.botaoChamada,
+                                        { backgroundColor: mesa.chamouGarcom ? '#e53935' : '#43a047' }
+                                    ]}
+                                />
+
+                                {/* NOVO - Indicador de pedido pronto enviado pela cozinha */}
+                                <View style={[
+                                    styles.botaoPronto,
+                                    { backgroundColor: mesa.pedidoPronto ? '#43a047' : '#e53935' }
+                                ]}>
+                                    <Text style={styles.botaoProntoTexto}>
+                                        {mesa.pedidoPronto ? 'PRONTO' : 'COZINHA'}
+                                    </Text>
+                                </View>
+
+                            </View>
                         </View>
 
                     </View>
@@ -133,10 +143,27 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 12,
     },
+    colunaIndicadores: {
+        gap: 8,
+        alignItems: 'center',
+    },
     botaoChamada: {
         width: 45,
         height: 45,
         borderRadius: 4,
+    },
+    botaoPronto: {
+        width: 45,
+        height: 45,
+        borderRadius: 4,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    botaoProntoTexto: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 9,
+        textAlign: 'center',
     },
     semMesas: {
         textAlign: 'center',
