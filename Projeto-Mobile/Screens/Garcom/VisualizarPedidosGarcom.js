@@ -12,7 +12,7 @@ export default function VisualizarPedidosGarcom({ navigation, route }) {
 
     useEffect(() => {
         // TODO: Defina o nome da coleção no Firebase conforme necessário
-        // Usando onSnapshot para atualização em tempo real
+        // onSnapshot é pra atualização em tempo real
         const unsubscribe = onSnapshot(collection(database, 'mesas'), (querySnapshot) => {
             const lista = [];
             querySnapshot.forEach((docSnap) => {

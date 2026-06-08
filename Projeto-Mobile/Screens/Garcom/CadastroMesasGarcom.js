@@ -36,12 +36,9 @@ export default function CadastroMesasGarcom({ navigation }) {
     return (
         <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View style={styles.container}>
-
-                {/* Logo do Restaurante */}
                 <View style={styles.logoContainer}>
-                    {/* TODO: Substitua a URI pelo link da imagem do restaurante */}
                     <Image
-                        source={{ uri: 'URL_DA_IMAGEM_DO_RESTAURANTE' }}
+                        source={{ uri: '../../assets/restaurante.jpeg' }}
                         style={styles.logo}
                         resizeMode="contain"
                     />

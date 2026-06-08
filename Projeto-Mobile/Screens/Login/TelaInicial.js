@@ -19,15 +19,6 @@ export default function TelaInicial({navigation} ) {
 
       
       <View style={styles.baixo}>
-        <Button
-          mode="contained"
-          style={styles.button}
-        >
-
-          Cadastrar
-        </Button>
-
-        {/* tirar o botão de cadastrar */}
 
         <Button 
         mode="contained" 
