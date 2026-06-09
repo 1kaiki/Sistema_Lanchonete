@@ -1,19 +1,17 @@
-import React from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ScrollView} from "react-native";
 import { Card } from "react-native-paper";
+import { mesas } from "../../db/DBmesas";
 
-const mesas = [
-	{ id: 1, nome: "Mesa 1", pedido: "", valor: "" },
-	{ id: 2, nome: "Mesa 2", pedido: "", valor: "" },
-	{ id: 3, nome: "Mesa 3", pedido: "", valor: "" },
-	{ id: 4, nome: "Mesa 4", pedido: "", valor: "" },
-	{ id: 5, nome: "Mesa 5", pedido: "", valor: "" },
-];
+import { NavigationContainer } from '@react-navigation/native';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import CadastroMesasGarcom from '../../Screens/Garcom/CadastroMesasGarcom';
 
-export default function Consultarvalores() {
+function ConsultarValoresMain({ navigation }) {
 	return (
 		<View style={styles.container}>
 			<Text style={styles.titulo}>Consultar Valores</Text>
+
+			
 
 			<ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
 				<View style={styles.cardsContainer}>
@@ -23,11 +21,11 @@ export default function Consultarvalores() {
 								<Text style={styles.cardTitle}>{mesa.nome}</Text>
 								<View style={styles.cardRow}>
 									<Text style={styles.cardLabel}>Pedido:</Text>
-									<Text style={styles.cardValue}>{mesa.pedido}</Text>
+									<Text style={styles.cardValue}>{mesa.pedido || '—'}</Text>
 								</View>
 								<View style={styles.cardRow}>
 									<Text style={styles.cardLabel}>Valor:</Text>
-									<Text style={styles.cardValue}>{mesa.valor}</Text>
+									<Text style={styles.cardValue}>{mesa.valor || '—'}</Text>
 								</View>
 							</Card.Content>
 						</Card>
@@ -35,6 +33,19 @@ export default function Consultarvalores() {
 				</View>
 			</ScrollView>
 		</View>
+	);
+}
+
+const Drawer = createDrawerNavigator();
+
+export default function Consultarvalores() {
+	return (
+		<NavigationContainer>
+			<Drawer.Navigator initialRouteName="ConsultarValores">
+				<Drawer.Screen name="ConsultarValores" component={ConsultarValoresMain} options={{ title: 'Consultar Valores' }} />
+				<Drawer.Screen name="CadastroMesas" component={CadastroMesasGarcom} options={{ title: 'Cadastro Mesas (Garçom)' }} />
+			</Drawer.Navigator>
+		</NavigationContainer>
 	);
 }
 
