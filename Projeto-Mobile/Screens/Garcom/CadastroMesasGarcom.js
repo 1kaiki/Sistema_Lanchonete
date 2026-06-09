@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ScrollView, Alert } from 'react-native';
 import { useState } from 'react';
-import { database } from '../firebaseConfig';
+import { database } from '../../Services/FirebaseConfig';
 import { collection, addDoc } from 'firebase/firestore';
 
 export default function CadastroMesasGarcom({ navigation }) {
@@ -38,7 +38,7 @@ export default function CadastroMesasGarcom({ navigation }) {
             <View style={styles.container}>
                 <View style={styles.logoContainer}>
                     <Image
-                        source={{ uri: '../../assets/restaurante.jpeg' }}
+                        source={require('../../assets/restaurante.jpeg')}
                         style={styles.logo}
                         resizeMode="contain"
                     />

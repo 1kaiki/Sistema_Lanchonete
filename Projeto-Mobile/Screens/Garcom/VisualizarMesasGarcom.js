@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { useState, useEffect } from 'react';
-import { database } from '../firebaseConfig';
+import { db } from '../../Services/FirebaseConfig';
 import { collection, getDocs, doc, updateDoc, onSnapshot } from 'firebase/firestore';
 
 export default function VisualizarMesasGarcom({ navigation }) {
@@ -10,7 +10,7 @@ export default function VisualizarMesasGarcom({ navigation }) {
     useEffect(() => {
         // TODO: Defina o nome da coleção no Firebase conforme necessário
         // Usando onSnapshot para atualização em tempo real
-        const unsubscribe = onSnapshot(collection(database, 'mesas'), (querySnapshot) => {
+        const unsubscribe = onSnapshot(collection(db, 'mesas'), (querySnapshot) => {
             const lista = [];
             querySnapshot.forEach((doc) => {
                 lista.push({ id: doc.id, ...doc.data() });

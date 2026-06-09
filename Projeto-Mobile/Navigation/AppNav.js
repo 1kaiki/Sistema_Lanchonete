@@ -6,7 +6,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import GerenteNav from './GerenteNav'
 
 //IMPORT GARCOM
-import CadastroMesasGarcom from '../Screens/Garcom/CadastroMesasGarcom'
+// import CadastroMesasGarcom from '../Screens/Garcom/CadastroMesasGarcom'
+import GarcomNav from './GarcomNav';
+
+// IMPORT COZINHA
+import VisualizarPedidosCozinha from '../Screens/Cozinha/VisualizarPedidosCozinha';
 
 //IMPORT DOS LOGINS
 import TelaInicial from '../Screens/Login/TelaInicial';
@@ -86,11 +90,15 @@ export default function AppRoutes() {
                     name="Tabuas"
                     component={Tabuas}
                 />
-                <Stack.Screen
-                    name="TelaGarcom"
-                    component={CadastroMesasGarcom}
+                <Stack.Screen 
+                name="VisualizarPedidosCozinha" 
+                component={VisualizarPedidosCozinha} 
                 />
-                
+                <Stack.Screen 
+                name="TelaGarcom" 
+                component={GarcomNav} 
+                options={{ headerShown: false }} 
+                />
 
             </Stack.Navigator>
         </NavigationContainer>
