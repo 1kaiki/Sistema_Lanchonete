@@ -1,6 +1,8 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
+//IMPORT ATENDENTE
+import Consultarvalores from '../Screens/Atendente/Consultarvalores';
+import ConsultarPedido from '../Screens/Atendente/ConsultarPedido';
 
 //IMPORT GERENTE
 import GerenteNav from './GerenteNav'
@@ -90,6 +92,9 @@ export default function AppRoutes() {
                     name="TelaGarcom"
                     component={CadastroMesasGarcom}
                 />
+                {/* ATENDENTE */}
+                <Stack.Screen name="ConsultarValores" component={Consultarvalores} />
+                <Stack.Screen name="ConsultarPedido" component={ConsultarPedido} />
                 
 
             </Stack.Navigator>

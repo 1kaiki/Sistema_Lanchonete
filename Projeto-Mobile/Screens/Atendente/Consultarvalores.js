@@ -1,102 +1,207 @@
-import { View, Text, StyleSheet, ScrollView} from "react-native";
-import { Card } from "react-native-paper";
-import { mesas } from "../../db/DBmesas";
+import React, { useState, useEffect } from 'react';
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import CadastroMesasGarcom from '../../Screens/Garcom/CadastroMesasGarcom';
+import { View,Text,StyleSheet,FlatList } from 'react-native';
 
-function ConsultarValoresMain({ navigation }) {
-	return (
-		<View style={styles.container}>
-			<Text style={styles.titulo}>Consultar Valores</Text>
+import { Button } from 'react-native-paper';
 
-			
+import { db } from '../../Services/FirebaseConfig';
 
-			<ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-				<View style={styles.cardsContainer}>
-					{mesas.map((mesa) => (
-						<Card key={mesa.id} style={styles.card}>
-							<Card.Content style={styles.cardContent}>
-								<Text style={styles.cardTitle}>{mesa.nome}</Text>
-								<View style={styles.cardRow}>
-									<Text style={styles.cardLabel}>Pedido:</Text>
-									<Text style={styles.cardValue}>{mesa.pedido || '—'}</Text>
-								</View>
-								<View style={styles.cardRow}>
-									<Text style={styles.cardLabel}>Valor:</Text>
-									<Text style={styles.cardValue}>{mesa.valor || '—'}</Text>
-								</View>
-							</Card.Content>
-						</Card>
-					))}
-				</View>
-			</ScrollView>
-		</View>
-	);
-}
+import { collection, getDocs } from 'firebase/firestore';
 
-const Drawer = createDrawerNavigator();
+export default function VisualizacaoMesa({ navigation }) {
 
-export default function Consultarvalores() {
-	return (
-		<NavigationContainer>
-			<Drawer.Navigator initialRouteName="ConsultarValores">
-				<Drawer.Screen name="ConsultarValores" component={ConsultarValoresMain} options={{ title: 'Consultar Valores' }} />
-				<Drawer.Screen name="CadastroMesas" component={CadastroMesasGarcom} options={{ title: 'Cadastro Mesas (Garçom)' }} />
-			</Drawer.Navigator>
-		</NavigationContainer>
-	);
-}
+    const [mesas, setMesas] = useState([]);
+
+    useEffect(() => {
+        buscarMesas();
+    }, []);
+
+    async function buscarMesas() {
+
+        try {
+
+            const querySnapshot = await getDocs(
+                collection(db, 'mesas')
+            );
+
+            const listaMesas = [];
+
+            querySnapshot.forEach((doc) => {
+
+                listaMesas.push({
+                    firebaseId: doc.id,
+                    ...doc.data(),
+                });
+
+            });
+
+            listaMesas.sort((a, b) => a.id - b.id);
+
+            setMesas(listaMesas);
+
+        } catch (error) {
+
+            console.log('Erro ao buscar mesas:', error);
+
+        }}
+
+   
+
+    function corStatus(status) {
+
+        if (status === 'livre') {
+            return '#32cd32';
+        }
+
+        if (status === 'ocupada') {
+            return '#ff3b30';
+        }
+
+        return '#ffd60a';
+    }
+
+    return (
+
+        <View style={styles.container}>
+
+            <Text style={styles.titulo}>
+                Visualização das Mesas
+            </Text>
+
+            
+
+            <FlatList
+                data={mesas}
+                numColumns={2}
+                keyExtractor={(item) =>
+                    item.firebaseId || item.id.toString()
+                }
+
+                columnWrapperStyle={{
+                    justifyContent: 'space-between',
+                }}
+
+                renderItem={({ item }) => (
+
+                    <View style={styles.cardContainer}>
+
+                        <View style={styles.cardMesa}>
+
+                            <Text style={styles.txtMesa}>
+                                Mesa {item.id}
+                            </Text>
+
+                        </View>
+
+                        <View style={styles.areaInferior}>
+
+                            <View style={styles.statusContainer}>
+
+                                <View
+                                    style={[
+                                        styles.statusCor,
+                                        {
+                                            backgroundColor:
+                                                corStatus(item.status),
+                                        },
+                                    ]}
+                                />
+
+                                <Text style={styles.txtStatus}>
+                                    {item.status}
+                                </Text>
+
+                            </View>
+
+                            <Button
+                                mode="contained"
+                                style={styles.button}
+                                onPress={() => navigation.navigate('ConsultarPedido', { mesaId: item.id })}
+                            >
+                                Consultar Pedido
+                            </Button>
+
+                            {/* Botão de excluir mesa removido */}
+                        </View>
+                    </View>
+                )}/>
+        </View>  
+);}
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: "#F2EB7B",
-		paddingTop: 40,
-		paddingHorizontal: 16,
-	},
-	titulo: {
-		fontSize: 32,
-		fontWeight: "700",
-		textAlign: "center",
-		marginBottom: 24,
-		color: "#222",
-	},
-	scrollContent: {
-		paddingBottom: 24,
-	},
-	cardsContainer: {
-		flexDirection: "row",
-		flexWrap: "wrap",
-		justifyContent: "space-between",
-	},
-	card: {
-		width: "48%",
-		backgroundColor: "#D9D9D9",
-		borderRadius: 12,
-		marginBottom: 16,
-	},
-	cardContent: {
-		padding: 16,
-	},
-	cardTitle: {
-		fontSize: 20,
-		fontWeight: "700",
-		marginBottom: 12,
-		color: "#222",
-	},
-	cardRow: {
-		marginBottom: 10,
-	},
-	cardLabel: {
-		fontSize: 14,
-		fontWeight: "600",
-		color: "#444",
-		marginBottom: 4,
-	},
-	cardValue: {
-		fontSize: 16,
-		color: "#111",
-	},
+
+    container: {
+        flex: 1,
+        backgroundColor: '#e9b67bff',
+        padding: 15,
+    },
+
+    buttonExcluir: {
+    backgroundColor: '#ff3b30',
+    borderRadius: 15,
+    },
+
+    titulo: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 25,
+    },
+
+    buttonAdicionar: {
+        backgroundColor: '#ee9a2dff',
+        marginBottom: 25,
+        borderRadius: 15,
+    },
+
+    cardContainer: {
+        width: '48%',
+        marginBottom: 30,
+    },
+
+    cardMesa: {
+        height: 160,
+        backgroundColor: '#f5f5f5',
+        borderWidth: 3,
+        borderColor: '#000',
+        borderRadius: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    txtMesa: {
+        fontSize: 30,
+        fontWeight: 'bold',
+    },
+
+    areaInferior: {
+        marginTop: 15,
+        gap: 15,
+    },
+
+    statusContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10,
+    },
+
+    statusCor: {
+        width: 30,
+        height: 30,
+        borderRadius: 8,
+        borderWidth: 2,
+        borderColor: '#000',
+    },
+
+    txtStatus: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        textTransform: 'capitalize',
+    },
+
+    button: {
+        backgroundColor: '#ee9a2dff',
+        borderRadius: 15,
+    },
+
 });

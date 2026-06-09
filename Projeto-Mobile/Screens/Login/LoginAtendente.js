@@ -1,8 +1,41 @@
+import React, { useState } from 'react';
 import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../../Services/FirebaseConfig';
 
 
 export default function LoginAtendente({navigation}) {
+    const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+
+  async function logarFuncionario() {
+    try {
+      const querySnapshot = await getDocs(collection(db, "funcionarios"));
+      let encontrou = false;
+
+      querySnapshot.forEach((doc) => {
+        const funcionario = doc.data();
+        if (
+          funcionario.email === email &&
+          funcionario.cpf === senha &&
+          funcionario.tipo === "Atendente"
+        ) {
+          encontrou = true;
+        }
+      });
+
+      if (encontrou) {
+        alert("Login realizado!");
+        navigation.navigate("ConsultarValores");
+      } else {
+        alert("Email ou senha incorretos");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <ScrollView 
     contentContainerStyle={styles.container}
@@ -23,17 +56,23 @@ export default function LoginAtendente({navigation}) {
 
       
       <View style={styles.baixo}>
-        <TextInput style={styles.input}
-        placeholder='Login'
-            
+        <TextInput
+          style={styles.input}
+          placeholder='Login'
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
         />
         <TextInput
-         
-        placeholder='Senha'
-            
+          style={styles.input}
+          placeholder='Senha'
+          value={senha}
+          onChangeText={setSenha}
+          secureTextEntry
         />
 
-        <Button mode="contained" style={styles.button}>
+        <Button mode="contained" style={styles.button} onPress={logarFuncionario}>
           Logar
         </Button>
 
