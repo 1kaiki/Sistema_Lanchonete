@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ScrollView, Alert } from 'react-native';
 import { useState } from 'react';
-import { database } from '../Services/FirebaseConfig';
+import { database } from '../../Services/FirebaseConfig';
 import { collection, addDoc } from 'firebase/firestore';
 
 export default function EditarPedidosGarcom({ navigation }) {
@@ -37,7 +37,7 @@ export default function EditarPedidosGarcom({ navigation }) {
 
                 <View style={styles.logoContainer}>
                     <Image
-                        source={{ uri: '../../assets/restaurante.jpeg' }}
+                        source={require('../../assets/restaurante.jpeg')}
                         style={styles.logo}
                         resizeMode="contain"
                     />
