@@ -38,7 +38,7 @@ export default function CadastroMesasGarcom({ navigation }) {
             <View style={styles.container}>
                 <View style={styles.logoContainer}>
                     <Image
-                        source={{ uri: '../../assets/restaurante.jpeg' }}
+                        source={require('../../assets/restaurante.jpeg')}
                         style={styles.logo}
                         resizeMode="contain"
                     />

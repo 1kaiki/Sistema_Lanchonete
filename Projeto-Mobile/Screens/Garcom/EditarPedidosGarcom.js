@@ -37,7 +37,7 @@ export default function EditarPedidosGarcom({ navigation }) {
 
                 <View style={styles.logoContainer}>
                     <Image
-                        source={{ uri: '../../assets/restaurante.jpeg' }}
+                        source={require('../../assets/restaurante.jpeg')}
                         style={styles.logo}
                         resizeMode="contain"
                     />
