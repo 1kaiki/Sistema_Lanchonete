@@ -1,66 +1,109 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-import {
-    View,
-    Text,
-    StyleSheet,
-    FlatList
-} from 'react-native';
+import { View,Text,StyleSheet,FlatList } from 'react-native';
 
 import { Button } from 'react-native-paper';
 
+import { db } from '../../Services/FirebaseConfig';
+
+import { collection,addDoc,getDocs,deleteDoc,doc } from 'firebase/firestore';
+
 export default function VisualizacaoMesa() {
 
-    const [mesas, setMesas] = useState([
+    const [mesas, setMesas] = useState([]);
 
-        {
-            id: 1,
-            status: 'livre',
-        },
+    useEffect(() => {
+        buscarMesas();
+    }, []);
 
-        {
-            id: 2,
-            status: 'ocupada',
-        },
+    async function buscarMesas() {
 
-        {
-            id: 3,
-            status: 'reservada',
-        },
+        try {
 
-        {
-            id: 4,
-            status: 'livre',
-        },
+            const querySnapshot = await getDocs(
+                collection(db, 'mesas')
+            );
 
-    ]);
+            const listaMesas = [];
 
-    function adicionarMesa() {
+            querySnapshot.forEach((doc) => {
 
-        const novaMesa = {
+                listaMesas.push({
+                    firebaseId: doc.id,
+                    ...doc.data(),
+                });
 
-            id: mesas.length + 1,
-            status: 'livre',
+            });
 
-        };
+            listaMesas.sort((a, b) => a.id - b.id);
 
-        setMesas([...mesas, novaMesa]);
-    }
+            setMesas(listaMesas);
+
+        } catch (error) {
+
+            console.log('Erro ao buscar mesas:', error);
+
+        }}
+
+    async function adicionarMesa() {
+
+        try {
+
+            const maiorId =
+                mesas.length > 0
+                    ? Math.max(...mesas.map(mesa => mesa.id))
+                    : 0;
+
+            const novaMesa = {
+                id: maiorId + 1,
+                status: 'livre',
+            };
+
+            await addDoc(
+                collection(db, 'mesas'),
+                novaMesa
+            );
+
+            buscarMesas();
+
+        } catch (error) {
+
+            console.log('Erro ao adicionar mesa:', error);
+
+        }}
+
+    async function excluirMesa(firebaseId) {
+
+        try {
+
+            await deleteDoc(
+                doc(db, 'mesas', firebaseId)
+            );
+
+            buscarMesas();
+
+        } catch(error) {
+
+            console.log(
+                'Erro ao excluir mesa:',
+                error
+            );
+    }}
 
     function corStatus(status) {
 
-        if(status === 'livre') {
+        if (status === 'livre') {
             return '#32cd32';
         }
 
-        if(status === 'ocupada') {
+        if (status === 'ocupada') {
             return '#ff3b30';
         }
 
         return '#ffd60a';
     }
 
-    return(
+    return (
 
         <View style={styles.container}>
 
@@ -68,7 +111,6 @@ export default function VisualizacaoMesa() {
                 Visualização das Mesas
             </Text>
 
-            {/* botão adicionar mesa */}
             <Button
                 mode="contained"
                 style={styles.buttonAdicionar}
@@ -80,17 +122,18 @@ export default function VisualizacaoMesa() {
             <FlatList
                 data={mesas}
                 numColumns={2}
-                keyExtractor={(item) => item.id.toString()}
+                keyExtractor={(item) =>
+                    item.firebaseId || item.id.toString()
+                }
 
                 columnWrapperStyle={{
-                    justifyContent: 'space-between'
+                    justifyContent: 'space-between',
                 }}
 
                 renderItem={({ item }) => (
 
                     <View style={styles.cardContainer}>
 
-                        {/* quadrado da mesa */}
                         <View style={styles.cardMesa}>
 
                             <Text style={styles.txtMesa}>
@@ -99,10 +142,8 @@ export default function VisualizacaoMesa() {
 
                         </View>
 
-                        {/* parte inferior */}
                         <View style={styles.areaInferior}>
 
-                            {/* status */}
                             <View style={styles.statusContainer}>
 
                                 <View
@@ -110,8 +151,8 @@ export default function VisualizacaoMesa() {
                                         styles.statusCor,
                                         {
                                             backgroundColor:
-                                            corStatus(item.status)
-                                        }
+                                                corStatus(item.status),
+                                        },
                                     ]}
                                 />
 
@@ -121,7 +162,6 @@ export default function VisualizacaoMesa() {
 
                             </View>
 
-                            {/* botão */}
                             <Button
                                 mode="contained"
                                 style={styles.button}
@@ -129,18 +169,20 @@ export default function VisualizacaoMesa() {
                                 Consultar Pedido
                             </Button>
 
+                            <Button
+                                mode="contained"
+                                style={styles.buttonExcluir}
+                                onPress={() =>
+                                    excluirMesa(item.firebaseId)
+                                }
+                            >
+                                Excluir Mesa
+                            </Button>
                         </View>
-
                     </View>
-
-                )}
-
-            />
-
-        </View>
-
-    );
-}
+                )}/>
+        </View>  
+);}
 
 const styles = StyleSheet.create({
 
@@ -148,6 +190,11 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#e9b67bff',
         padding: 15,
+    },
+
+    buttonExcluir: {
+    backgroundColor: '#ff3b30',
+    borderRadius: 15,
     },
 
     titulo: {
@@ -174,7 +221,6 @@ const styles = StyleSheet.create({
         borderWidth: 3,
         borderColor: '#000',
         borderRadius: 20,
-
         justifyContent: 'center',
         alignItems: 'center',
     },
