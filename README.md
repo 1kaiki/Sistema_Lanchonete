@@ -1,4 +1,7 @@
 ----------------SISTEMA DE LANCHONETE--------------
+
+
+
 Aplicativo desenvolvimento em react native para gerenciamento de uma lanchonete, permitindo o controle de pedidos, mesas, funcionários, cardápio e fluxo de produção na cozinha. 
 
 Integrantes: Gustavo Budny, João Gabriel e Kaiki Mariano
