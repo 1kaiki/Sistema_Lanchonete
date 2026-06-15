@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { useState, useEffect } from 'react';
-import { database } from '../../Services/FirebaseConfig';
-import { collection, getDocs, doc, onSnapshot } from 'firebase/firestore';
+import { db } from '../../Services/FirebaseConfig';
+import { collection, onSnapshot, doc, updateDoc } from 'firebase/firestore';
 
 export default function VisualizarPedidosGarcom({ navigation, route }) {
 
@@ -11,18 +11,20 @@ export default function VisualizarPedidosGarcom({ navigation, route }) {
     const mesaSelecionada = route?.params?.mesa || null;
 
     useEffect(() => {
-        // TODO: Defina o nome da coleção no Firebase conforme necessário
-        // onSnapshot é pra atualização em tempo real
-        const unsubscribe = onSnapshot(collection(database, 'mesas'), (querySnapshot) => {
+        const unsubscribe = onSnapshot(collection(db, 'mesas'), (querySnapshot) => {
             const lista = [];
             querySnapshot.forEach((docSnap) => {
-                lista.push({ id: docSnap.id, ...docSnap.data() });
+                const dados = docSnap.data();
+                if (dados.pedido) {
+                    lista.push({ id: docSnap.id, ...dados });
+                }
             });
 
             // Se veio de uma mesa específica, filtra apenas ela
             if (mesaSelecionada) {
                 setPedidos(lista.filter(m => m.id === mesaSelecionada.id));
             } else {
+                lista.sort((a, b) => (a.id || 0) - (b.id || 0));
                 setPedidos(lista);
             }
         }, (error) => {
@@ -32,43 +34,68 @@ export default function VisualizarPedidosGarcom({ navigation, route }) {
         return () => unsubscribe();
     }, []);
 
+    const EnviarParaCozinha = async (mesa) => {
+        try {
+            await updateDoc(doc(db, 'mesas', mesa.id), {
+                concluidoCozinha: false,
+                pedidoPronto: false,
+            });
+            Alert.alert('Pedido', `Pedido da Mesa ${mesa.numeroMesa || mesa.id} reenviado para a cozinha!`);
+        } catch (error) {
+            Alert.alert('Erro', 'Não foi possível reenviar o pedido.');
+            console.log(error);
+        }
+    };
+
     return (
-        <ScrollView style={styles.scrollContainer}> 
+        <ScrollView style={styles.scrollContainer}>
             <View style={styles.container}>
 
-                <Text style={styles.titulo}>MESAS ATENDIDAS</Text>
+                <Text style={styles.titulo}>
+                    {mesaSelecionada
+                        ? `PEDIDO - MESA ${mesaSelecionada.numeroMesa || mesaSelecionada.id}`
+                        : 'MESAS ATENDIDAS'}
+                </Text>
 
                 {pedidos.map((mesa) => (
                     <View key={mesa.id} style={styles.pedidoContainer}>
 
-                        {/* TIPO 1 - Pedido principal */}
-                        <Text style={styles.labelTipo}>TIPO 1:</Text>
+                        {!mesaSelecionada && (
+                            <Text style={styles.mesaLabel}>MESA {mesa.numeroMesa || mesa.id}</Text>
+                        )}
+
+                        {/* Pedido principal */}
+                        <Text style={styles.labelTipo}>PEDIDO:</Text>
                         <View style={styles.caixaInfo}>
-                            <Text style={styles.caixaTexto}>{mesa.pedido || ''}</Text>
+                            <Text style={styles.caixaTexto}>{mesa.pedido || '-'}</Text>
                         </View>
 
-                        {/* TIPO 2 - Com valor total */}
-                        <Text style={styles.labelTipo}>TIPO 2:</Text>
+                        {/* Observações */}
+                        {mesa.observacoes ? (
+                            <>
+                                <Text style={styles.labelTipo}>OBSERVAÇÕES:</Text>
+                                <View style={styles.caixaInfo}>
+                                    <Text style={[styles.caixaTexto, { fontStyle: 'italic' }]}>{mesa.observacoes}</Text>
+                                </View>
+                            </>
+                        ) : null}
+
+                        {/* Status da cozinha */}
+                        <Text style={styles.labelTipo}>STATUS COZINHA:</Text>
                         <View style={styles.rowComValor}>
                             <View style={[styles.caixaInfo, styles.caixaInfoSelected, { flex: 1 }]}>
-                                <Text style={styles.caixaTexto}>{mesa.novoPedido || ''}</Text>
-                            </View>
-                            <View style={styles.caixaValor}>
-                                <Text style={styles.valorTexto}>valor total</Text>
-                            </View>
-                        </View>
-
-                        {/* BEBIDAS - Com botão enviar pedido */}
-                        <Text style={styles.labelTipo}>BEBIDAS:</Text>
-                        <View style={styles.rowComValor}>
-                            <View style={[styles.caixaInfo, { flex: 1 }]}>
-                                <Text style={styles.caixaTexto}>{mesa.bebidas || ''}</Text>
+                                <Text style={[
+                                    styles.caixaTexto,
+                                    { color: mesa.pedidoPronto ? '#43a047' : '#e53935', fontWeight: 'bold' }
+                                ]}>
+                                    {mesa.pedidoPronto ? '✅ PEDIDO PRONTO' : '⏳ Aguardando cozinha...'}
+                                </Text>
                             </View>
                             <TouchableOpacity
                                 style={styles.botaoEnviar}
-                                onPress={() => Alert.alert('Pedido', `Pedido da mesa ${mesa.numeroMesa} enviado!`)}
+                                onPress={() => EnviarParaCozinha(mesa)}
                             >
-                                <Text style={styles.botaoEnviarTexto}>enviar pedido</Text>
+                                <Text style={styles.botaoEnviarTexto}>reenviar{'\n'}pedido</Text>
                             </TouchableOpacity>
                         </View>
 
@@ -96,11 +123,21 @@ const styles = StyleSheet.create({
         backgroundColor: '#f5f542',
     },
     titulo: {
-        fontSize: 22,
+        fontSize: 20,
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 20,
         color: '#222',
+    },
+    mesaLabel: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#222',
+        marginBottom: 6,
+        marginTop: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#bbb',
+        paddingBottom: 4,
     },
     pedidoContainer: {
         marginBottom: 30,
@@ -116,7 +153,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#d9d9d9',
         borderRadius: 6,
         padding: 12,
-        minHeight: 70,
+        minHeight: 50,
         justifyContent: 'flex-start',
     },
     caixaInfoSelected: {
@@ -132,22 +169,8 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         gap: 10,
     },
-    caixaValor: {
-        backgroundColor: '#d9d9d9',
-        borderRadius: 6,
-        padding: 10,
-        width: 90,
-        height: 70,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    valorTexto: {
-        fontSize: 12,
-        color: '#333',
-        textAlign: 'center',
-    },
     botaoEnviar: {
-        backgroundColor: '#d9d9d9',
+        backgroundColor: '#222',
         borderRadius: 6,
         padding: 10,
         width: 90,
@@ -157,8 +180,9 @@ const styles = StyleSheet.create({
     },
     botaoEnviarTexto: {
         fontSize: 12,
-        color: '#333',
+        color: '#fff',
         textAlign: 'center',
+        fontWeight: 'bold',
     },
     semPedidos: {
         textAlign: 'center',
