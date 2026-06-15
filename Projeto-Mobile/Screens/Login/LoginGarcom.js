@@ -1,24 +1,7 @@
 import React, { useState } from 'react';
-
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  ScrollView
-} from 'react-native';
-
-import {
-  Button,
-  TextInput
-} from 'react-native-paper';
-
-import {
-  getFirestore,
-  collection,
-  getDocs
-} from 'firebase/firestore';
-
+import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
+import { Button, TextInput } from 'react-native-paper';
+import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import app from '../../Services/FirebaseConfig';
 
 export default function LoginGarcom({ navigation }) {
@@ -29,70 +12,47 @@ export default function LoginGarcom({ navigation }) {
   const db = getFirestore(app);
 
   async function logarFuncionario() {
-
     try {
-
-      const querySnapshot = await getDocs(
-        collection(db, "funcionarios")
-      );
+      const querySnapshot = await getDocs(collection(db, 'funcionarios'));
 
       let encontrou = false;
+      let nomeGarcom = '';
 
       querySnapshot.forEach((doc) => {
-
         const funcionario = doc.data();
-
-        if(
-          funcionario.email === email
-          &&
-          funcionario.cpf === senha
-          &&
-          funcionario.tipo === "Garçom"
+        if (
+          funcionario.email === email &&
+          funcionario.cpf === senha &&
+          funcionario.tipo === 'Garçom'
         ) {
-
           encontrou = true;
-
+          nomeGarcom = funcionario.nome || 'Garçom';
         }
-
       });
 
-      if(encontrou) {
-
-        alert("Login realizado!");
-
-        // tela depois do login
-        navigation.navigate("TelaGarcom");
-
+      if (encontrou) {
+        alert('Login realizado!');
+        // Passa o nome do garçom para o GarcomNav
+        navigation.navigate('TelaGarcom', { nomeGarcom });
+      } else {
+        alert('Email ou senha incorretos');
       }
 
-      else {
-
-        alert("Email ou senha incorretos");
-
-      }
-
-    } catch(error) {
-
+    } catch (error) {
       console.log(error);
-
     }
-
   }
 
   return (
-
     <ScrollView
       contentContainerStyle={styles.container}
       bounces={false}
       overScrollMode="never"
     >
-
       <View style={styles.container}>
 
         <View style={styles.topo}>
-          <Text style={styles.txt_title}>
-            Login Garçom
-          </Text>
+          <Text style={styles.txt_title}>Login Garçom</Text>
         </View>
 
         <View style={styles.meio}>
@@ -105,14 +65,14 @@ export default function LoginGarcom({ navigation }) {
         <View style={styles.baixo}>
 
           <TextInput
-            label='Email'
+            label="Email"
             value={email}
             onChangeText={setEmail}
             style={styles.input}
           />
 
           <TextInput
-            label='Senha'
+            label="Senha"
             secureTextEntry
             value={senha}
             onChangeText={setSenha}
@@ -122,7 +82,6 @@ export default function LoginGarcom({ navigation }) {
           <Button
             mode="contained"
             style={styles.button}
-
             onPress={logarFuncionario}
           >
             Logar
@@ -131,10 +90,7 @@ export default function LoginGarcom({ navigation }) {
           <Button
             mode="contained"
             style={styles.button}
-
-            onPress={() =>
-              navigation.navigate('EscolhaLogin')
-            }
+            onPress={() => navigation.navigate('EscolhaLogin')}
           >
             Voltar
           </Button>
@@ -142,13 +98,11 @@ export default function LoginGarcom({ navigation }) {
         </View>
 
       </View>
-
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-
   container: {
     flexGrow: 1,
     backgroundColor: '#e9b67bff',
@@ -156,40 +110,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 60,
   },
-
-  topo: {
-    alignItems: 'center',
-  },
-
-  meio: {
-    alignItems: 'center',
-  },
-
-  baixo: {
-    alignItems: 'center',
-  },
-
-  txt_title: {
-    fontSize: 30,
-    fontWeight: 'bold',
-  },
-
-  logo: {
-    width: 200,
-    height: 200,
-    resizeMode: 'contain',
-  },
-
-  button: {
-    width: 250,
-    marginTop: 30,
-    backgroundColor: '#ee9a2dff'
-  },
-
-  input: {
-    width: 250,
-    marginBottom: 10,
-    backgroundColor: '#fff',
-  }
-
+  topo: { alignItems: 'center' },
+  meio: { alignItems: 'center' },
+  baixo: { alignItems: 'center' },
+  txt_title: { fontSize: 30, fontWeight: 'bold' },
+  logo: { width: 200, height: 200, resizeMode: 'contain' },
+  button: { width: 250, marginTop: 30, backgroundColor: '#ee9a2dff' },
+  input: { width: 250, marginBottom: 10, backgroundColor: '#fff' },
 });

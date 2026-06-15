@@ -12,10 +12,19 @@ export default function VisualizarPedidosCozinha({ navigation }) {
             const lista = [];
             querySnapshot.forEach((docSnap) => {
                 const dados = docSnap.data();
-                if (!dados.concluidoCozinha) {
+                // Exibe apenas mesas com pedido registrado e não concluídas
+                if (dados.pedido && !dados.concluidoCozinha) {
                     lista.push({ id: docSnap.id, ...dados });
                 }
             });
+
+            // Ordena por número de mesa crescente
+            lista.sort((a, b) => {
+                const numA = parseInt(a.numeroMesa) || parseInt(a.id) || 0;
+                const numB = parseInt(b.numeroMesa) || parseInt(b.id) || 0;
+                return numA - numB;
+            });
+
             setPedidos(lista);
         }, (error) => {
             console.log('Erro ao buscar pedidos:', error);
@@ -30,7 +39,8 @@ export default function VisualizarPedidosCozinha({ navigation }) {
                 concluidoCozinha: true,
                 pedidoPronto: true,
             });
-            Alert.alert('Sucesso', `Pedido da Mesa ${pedido.numeroMesa} concluído! Garçom notificado.`);
+            const numMesa = pedido.numeroMesa || pedido.id;
+            Alert.alert('Sucesso', `Pedido da Mesa ${numMesa} concluído! Garçom notificado.`);
         } catch (error) {
             Alert.alert('Erro', 'Não foi possível concluir o pedido.');
             console.log('Erro ao concluir pedido:', error);
@@ -49,43 +59,49 @@ export default function VisualizarPedidosCozinha({ navigation }) {
 
             <Text style={styles.titulo}>PEDIDOS PENDENTES</Text>
 
-            {pedidos.map((pedido) => (
-                <View key={pedido.id} style={styles.card}>
+            {pedidos.map((pedido) => {
+                const numMesa = pedido.numeroMesa || pedido.id;
+                const garcom = pedido.nomeGarcom || 'Não informado';
 
-                    <Text style={styles.labelMesa}>PEDIDO MESA {pedido.numeroMesa}:</Text>
+                return (
+                    <View key={pedido.id} style={styles.card}>
 
-                    <View style={styles.cardRow}>
+                        <Text style={styles.labelMesa}>MESA {numMesa}</Text>
 
-                        <View style={styles.caixaPedido}>
-                            <Text style={styles.caixaTexto}>
-                                {pedido.pedido || ''}
-                            </Text>
-                            {pedido.observacoes ? (
-                                <Text style={styles.caixaObs}>
-                                    Obs: {pedido.observacoes}
-                                </Text>
-                            ) : null}
-                        </View>
+                        {pedido.editadoEm && (
+                            <Text style={styles.editadoTag}>✏️ PEDIDO ATUALIZADO PELO GARÇOM</Text>
+                        )}
 
-                        <View style={styles.colunaDir}>
-                            <View style={styles.boxGarcom}>
-                                <Text style={styles.boxGarcomTexto}>
-                                    GARÇOM:{'\n'}{pedido.nomeGarcom || '-'}
-                                </Text>
+                        <View style={styles.cardRow}>
+
+                            <View style={styles.caixaPedido}>
+                                <Text style={styles.caixaTexto}>{pedido.pedido}</Text>
+                                {pedido.observacoes ? (
+                                    <Text style={styles.caixaObs}>Obs: {pedido.observacoes}</Text>
+                                ) : null}
                             </View>
 
-                            <TouchableOpacity
-                                style={styles.botaoConcluir}
-                                onPress={() => ConcluirPedido(pedido)}
-                            >
-                                <Text style={styles.botaoConcluirTexto}>CONCLUIR{'\n'}PEDIDO</Text>
-                            </TouchableOpacity>
+                            <View style={styles.colunaDir}>
+                                {/* Box do garçom */}
+                                <View style={styles.boxGarcom}>
+                                    <Text style={styles.boxGarcomTexto}>
+                                        GARÇOM:{'\n'}{garcom}
+                                    </Text>
+                                </View>
+
+                                <TouchableOpacity
+                                    style={styles.botaoConcluir}
+                                    onPress={() => ConcluirPedido(pedido)}
+                                >
+                                    <Text style={styles.botaoConcluirTexto}>CONCLUIR{'\n'}PEDIDO</Text>
+                                </TouchableOpacity>
+                            </View>
+
                         </View>
 
                     </View>
-
-                </View>
-            ))}
+                );
+            })}
 
             {pedidos.length === 0 && (
                 <Text style={styles.semPedidos}>Nenhum pedido pendente no momento.</Text>
@@ -98,7 +114,7 @@ export default function VisualizarPedidosCozinha({ navigation }) {
 const styles = StyleSheet.create({
     scrollContainer: {
         flex: 1,
-        backgroundColor: '#f5f542',
+        backgroundColor: '#e9b67bff',
     },
     scrollContent: {
         paddingHorizontal: 20,
@@ -129,10 +145,16 @@ const styles = StyleSheet.create({
         marginBottom: 28,
     },
     labelMesa: {
-        fontSize: 13,
+        fontSize: 15,
         fontWeight: 'bold',
-        color: '#444',
-        marginBottom: 8,
+        color: '#222',
+        marginBottom: 4,
+    },
+    editadoTag: {
+        fontSize: 11,
+        color: '#1565C0',
+        fontWeight: 'bold',
+        marginBottom: 6,
     },
     cardRow: {
         flexDirection: 'row',
@@ -145,16 +167,16 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         padding: 12,
         minHeight: 110,
-        justifyContent: 'flex-start',
     },
     caixaTexto: {
-        fontSize: 13,
-        color: '#333',
+        fontSize: 14,
+        color: '#222',
+        fontWeight: '500',
     },
     caixaObs: {
         fontSize: 12,
         color: '#666',
-        marginTop: 6,
+        marginTop: 8,
         fontStyle: 'italic',
     },
     colunaDir: {
@@ -165,7 +187,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#29b6f6',
         borderRadius: 6,
         paddingVertical: 10,
-        paddingHorizontal: 12,
+        paddingHorizontal: 8,
         width: 90,
         alignItems: 'center',
         justifyContent: 'center',
@@ -174,14 +196,14 @@ const styles = StyleSheet.create({
     boxGarcomTexto: {
         color: '#fff',
         fontWeight: 'bold',
-        fontSize: 12,
+        fontSize: 11,
         textAlign: 'center',
     },
     botaoConcluir: {
         backgroundColor: '#e53935',
         borderRadius: 6,
         paddingVertical: 10,
-        paddingHorizontal: 12,
+        paddingHorizontal: 8,
         width: 90,
         alignItems: 'center',
         justifyContent: 'center',
