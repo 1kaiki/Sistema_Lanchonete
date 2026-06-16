@@ -2,7 +2,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import StackGerente from './StackGerente';
 import Cadastro from '../Screens/Gerente/Funcionarios/CadastroGarcom';
-import Visualizacao from '../Screens/Gerente/Funcionarios/Visualizacao';
+import StackFuncionarios from './StackFuncionarios';
 import StackCadastro from './StackCadastro';
 
 const Drawer = createDrawerNavigator();
@@ -15,13 +15,16 @@ export default function GerenteNav() {
             <Drawer.Screen
                 name="Home"
                 component={StackGerente}
+                options={{
+                    headerShown: true,
+                }}
             />
 
             <Drawer.Screen
-                name="VisualizacaoFuncionario"
-                component={Visualizacao}
+                name="Funcionarios"
+                component={StackFuncionarios}
                 options={{
-                    title: 'Visualização de funcionario'
+                    title: 'Funcionários'
                 }}
             />
 
