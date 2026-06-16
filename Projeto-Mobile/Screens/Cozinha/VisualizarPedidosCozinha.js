@@ -2,115 +2,168 @@ import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Alert } from 'rea
 import { useState, useEffect } from 'react';
 import { db } from '../../Services/FirebaseConfig';
 import { collection, onSnapshot, doc, updateDoc } from 'firebase/firestore';
-
+ 
 export default function VisualizarPedidosCozinha({ navigation }) {
-
+ 
     const [pedidos, setPedidos] = useState([]);
-
+ 
     useEffect(() => {
         const unsubscribe = onSnapshot(collection(db, 'mesas'), (querySnapshot) => {
             const lista = [];
             querySnapshot.forEach((docSnap) => {
                 const dados = docSnap.data();
-                // Exibe apenas mesas com pedido registrado e não concluídas
-                if (dados.pedido && !dados.concluidoCozinha) {
-                    lista.push({ id: docSnap.id, ...dados });
+                // exibe apenas pedidos não concluidos pela cozinha
+                // e que representam mesas com pedido ativo (cadastrados por garçons)
+                // (Gerente cria documentos de mesa sem 'pedido' ou com status 'livre')
+                if (dados.concluidoCozinha !== true && dados.status === 'ocupada' && dados.pedido) {
+                    lista.push({
+                        firebaseId: docSnap.id,
+                        ...dados
+                    });
                 }
             });
 
-            // Ordena por número de mesa crescente
-            lista.sort((a, b) => {
-                const numA = parseInt(a.numeroMesa) || parseInt(a.id) || 0;
-                const numB = parseInt(b.numeroMesa) || parseInt(b.id) || 0;
-                return numA - numB;
+            // remover possíveis duplicatas pelo número da mesa
+            // Normaliza numeroMesa para número inteiro e mantém o documento mais recente (por criadoEm)
+            const mapa = new Map();
+            const normalizeNumber = (val) => {
+                if (val === undefined || val === null) return NaN;
+                const s = String(val).trim();
+                // tenta converter diretamente
+                const n = Number(s);
+                if (!Number.isNaN(n)) return n;
+                // tenta extrair dígitos (por ex. 'Mesa 5')
+                const m = s.match(/(\d+)/);
+                return m ? Number(m[1]) : NaN;
+            };
+
+            const timeOf = (obj) => {
+                if (!obj) return 0;
+                const t = obj.criadoEm;
+                if (!t) return 0;
+                // Firestore Timestamp tem toDate()
+                if (typeof t.toDate === 'function') return t.toDate().getTime();
+                // JS Date ou string
+                const d = new Date(t);
+                return isNaN(d.getTime()) ? 0 : d.getTime();
+            };
+
+            lista.forEach(item => {
+                const num = normalizeNumber(item.numeroMesa);
+                const chave = Number.isNaN(num) ? String(item.id || '') : String(num);
+
+                if (!mapa.has(chave)) {
+                    // armazena numeroMesa normalizado para uso posterior
+                    mapa.set(chave, { ...item, __numeroMesaNorm: num });
+                } else {
+                    // se já existe, mantém o mais recente (por criadoEm)
+                    const existente = mapa.get(chave);
+                    const tExist = timeOf(existente);
+                    const tItem = timeOf(item);
+                    if (tItem > tExist) {
+                        mapa.set(chave, { ...item, __numeroMesaNorm: num });
+                    }
+                }
             });
 
-            setPedidos(lista);
+            // ordenar por número da mesa (crescente). Se não houver número, ordena por id
+            const resultadoUnico = Array.from(mapa.values()).sort((a, b) => {
+                const na = Number.isNaN(a.__numeroMesaNorm) ? Number(a.id || 0) : a.__numeroMesaNorm;
+                const nb = Number.isNaN(b.__numeroMesaNorm) ? Number(b.id || 0) : b.__numeroMesaNorm;
+                return na - nb;
+            });
+
+            setPedidos(resultadoUnico);
         }, (error) => {
             console.log('Erro ao buscar pedidos:', error);
         });
-
+ 
         return () => unsubscribe();
     }, []);
-
+ 
     const ConcluirPedido = async (pedido) => {
-        try {
-            await updateDoc(doc(db, 'mesas', pedido.id), {
-                concluidoCozinha: true,
-                pedidoPronto: true,
-            });
-            const numMesa = pedido.numeroMesa || pedido.id;
-            Alert.alert('Sucesso', `Pedido da Mesa ${numMesa} concluído! Garçom notificado.`);
-        } catch (error) {
-            Alert.alert('Erro', 'Não foi possível concluir o pedido.');
-            console.log('Erro ao concluir pedido:', error);
-        }
+        Alert.alert(
+            'Confirmar',
+            `Concluir pedido da Mesa ${pedido.numeroMesa}?`,
+            [
+                { text: 'Cancelar', style: 'cancel' },
+                {
+                    text: 'Confirmar',
+                    onPress: async () => {
+                        try {
+                            await updateDoc(doc(db, 'mesas', pedido.firebaseId), {
+                            concluidoCozinha: true,
+                            pedidoPronto: true,
+                        });
+                            // o onSnapshot já remove o card automaticamente após o update
+                        } catch (error) {
+                            Alert.alert('Erro', 'Não foi possível concluir o pedido.');
+                            console.log('Erro ao concluir pedido:', error);
+                        }
+                    }
+                }
+            ]
+        );
     };
-
+ 
     return (
         <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.scrollContent}>
-
+ 
             <TouchableOpacity
                 style={styles.botaoVoltar}
                 onPress={() => navigation.navigate('LoginCozinha')}
             >
                 <Text style={styles.botaoVoltarTexto}>← VOLTAR</Text>
             </TouchableOpacity>
-
+ 
             <Text style={styles.titulo}>PEDIDOS PENDENTES</Text>
-
-            {pedidos.map((pedido) => {
-                const numMesa = pedido.numeroMesa || pedido.id;
-                const garcom = pedido.nomeGarcom || 'Não informado';
-
-                return (
-                    <View key={pedido.id} style={styles.card}>
-
-                        <Text style={styles.labelMesa}>MESA {numMesa}</Text>
-
-                        {pedido.editadoEm && (
-                            <Text style={styles.editadoTag}>✏️ PEDIDO ATUALIZADO PELO GARÇOM</Text>
-                        )}
-
-                        <View style={styles.cardRow}>
-
-                            <View style={styles.caixaPedido}>
-                                <Text style={styles.caixaTexto}>{pedido.pedido}</Text>
-                                {pedido.observacoes ? (
-                                    <Text style={styles.caixaObs}>Obs: {pedido.observacoes}</Text>
-                                ) : null}
-                            </View>
-
-                            <View style={styles.colunaDir}>
-                                {/* Box do garçom */}
-                                <View style={styles.boxGarcom}>
-                                    <Text style={styles.boxGarcomTexto}>
-                                        GARÇOM:{'\n'}{garcom}
-                                    </Text>
-                                </View>
-
-                                <TouchableOpacity
-                                    style={styles.botaoConcluir}
-                                    onPress={() => ConcluirPedido(pedido)}
-                                >
-                                    <Text style={styles.botaoConcluirTexto}>CONCLUIR{'\n'}PEDIDO</Text>
-                                </TouchableOpacity>
-                            </View>
-
+ 
+            {pedidos.map((pedido) => (
+                <View key={pedido.firebaseId} style={styles.card}>
+ 
+                    <Text style={styles.labelMesa}>PEDIDO MESA {pedido.numeroMesa}:</Text>
+ 
+                    <View style={styles.cardRow}>
+ 
+                        <View style={styles.caixaPedido}>
+                            <Text style={styles.caixaTexto}>
+                                {pedido.pedido || ''}
+                            </Text>
+                            {pedido.observacoes ? (
+                                <Text style={styles.caixaObs}>
+                                    Obs: {pedido.observacoes}
+                                </Text>
+                            ) : null}
                         </View>
-
+ 
+                        <View style={styles.colunaDir}>
+                            <View style={styles.boxGarcom}>
+                                <Text style={styles.boxGarcomTexto}>
+                                    GARÇOM:{'\n'}{pedido.nomeGarcom || '-'}
+                                </Text>
+                            </View>
+ 
+                            <TouchableOpacity
+                                style={styles.botaoConcluir}
+                                onPress={() => ConcluirPedido(pedido)}
+                            >
+                                <Text style={styles.botaoConcluirTexto}>CONCLUIR{'\n'}PEDIDO</Text>
+                            </TouchableOpacity>
+                        </View>
+ 
                     </View>
-                );
-            })}
-
+ 
+                </View>
+            ))}
+ 
             {pedidos.length === 0 && (
                 <Text style={styles.semPedidos}>Nenhum pedido pendente no momento.</Text>
             )}
-
+ 
         </ScrollView>
     );
 }
-
+ 
 const styles = StyleSheet.create({
     scrollContainer: {
         flex: 1,
@@ -145,16 +198,10 @@ const styles = StyleSheet.create({
         marginBottom: 28,
     },
     labelMesa: {
-        fontSize: 15,
+        fontSize: 13,
         fontWeight: 'bold',
-        color: '#222',
-        marginBottom: 4,
-    },
-    editadoTag: {
-        fontSize: 11,
-        color: '#1565C0',
-        fontWeight: 'bold',
-        marginBottom: 6,
+        color: '#444',
+        marginBottom: 8,
     },
     cardRow: {
         flexDirection: 'row',
@@ -167,16 +214,16 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         padding: 12,
         minHeight: 110,
+        justifyContent: 'flex-start',
     },
     caixaTexto: {
-        fontSize: 14,
-        color: '#222',
-        fontWeight: '500',
+        fontSize: 13,
+        color: '#333',
     },
     caixaObs: {
         fontSize: 12,
         color: '#666',
-        marginTop: 8,
+        marginTop: 6,
         fontStyle: 'italic',
     },
     colunaDir: {
@@ -187,7 +234,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#29b6f6',
         borderRadius: 6,
         paddingVertical: 10,
-        paddingHorizontal: 8,
+        paddingHorizontal: 12,
         width: 90,
         alignItems: 'center',
         justifyContent: 'center',
@@ -196,14 +243,14 @@ const styles = StyleSheet.create({
     boxGarcomTexto: {
         color: '#fff',
         fontWeight: 'bold',
-        fontSize: 11,
+        fontSize: 12,
         textAlign: 'center',
     },
     botaoConcluir: {
         backgroundColor: '#e53935',
         borderRadius: 6,
         paddingVertical: 10,
-        paddingHorizontal: 8,
+        paddingHorizontal: 12,
         width: 90,
         alignItems: 'center',
         justifyContent: 'center',
@@ -222,3 +269,4 @@ const styles = StyleSheet.create({
         fontSize: 15,
     },
 });
+ 

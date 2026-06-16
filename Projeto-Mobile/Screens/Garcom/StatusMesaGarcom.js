@@ -1,225 +1,217 @@
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Alert } from 'react-native';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import {View,Text,StyleSheet,FlatList} from 'react-native';
+import { Button } from 'react-native-paper';
 import { db } from '../../Services/FirebaseConfig';
-import { collection, onSnapshot, doc, updateDoc } from 'firebase/firestore';
+
+import {collection,onSnapshot, doc, updateDoc} from 'firebase/firestore';
  
-export default function VisualizarPedidosCozinha({ navigation }) {
+export default function VisualizacaoMesa({ navigation }) {
  
-    const [pedidos, setPedidos] = useState([]);
- 
+    const [mesas, setMesas] = useState([]);
+
     useEffect(() => {
-        const unsubscribe = onSnapshot(collection(db, 'mesas'), (querySnapshot) => {
+
+    const unsubscribe = onSnapshot(
+        collection(db, 'mesas'),
+        (querySnapshot) => {
+
             const lista = [];
+
             querySnapshot.forEach((docSnap) => {
-                const dados = docSnap.data();
-                // Exibe apenas mesas com pedido registrado e não concluídas
-                if (dados.pedido && !dados.concluidoCozinha) {
-                    lista.push({ firebaseId: docSnap.id, ...dados }); // CORRIGIDO: firebaseId
-                }
+
+                lista.push({
+                    firebaseId: docSnap.id,
+                    ...docSnap.data()
+                });
+
             });
- 
-            // Ordena por número de mesa crescente
-            lista.sort((a, b) => {
-                const numA = parseInt(a.numeroMesa) || parseInt(a.id) || 0;
-                const numB = parseInt(b.numeroMesa) || parseInt(b.id) || 0;
-                return numA - numB;
-            });
- 
-            setPedidos(lista);
-        }, (error) => {
-            console.log('Erro ao buscar pedidos:', error);
-        });
- 
-        return () => unsubscribe();
-    }, []);
- 
-    const ConcluirPedido = async (pedido) => {
-        try {
-            await updateDoc(doc(db, 'mesas', pedido.firebaseId), { // CORRIGIDO: firebaseId
-                concluidoCozinha: true,
-                pedidoPronto: true,
-            });
-            const numMesa = pedido.numeroMesa || pedido.id;
-            Alert.alert('Sucesso', `Pedido da Mesa ${numMesa} concluído! Garçom notificado.`);
-        } catch (error) {
-            Alert.alert('Erro', 'Não foi possível concluir o pedido.');
-            console.log('Erro ao concluir pedido:', error);
+
+            lista.sort((a, b) => a.id - b.id);
+
+            setMesas(lista);
+
+        },
+        (error) => {
+            console.log(
+                'Erro ao buscar mesas:',
+                error
+            );
         }
-    };
+    );
+
+    return () => unsubscribe();
+
+}, []);
+
+    async function concluirPedido(mesa) {
+
+    try {
+
+        await updateDoc(
+            doc(db, 'mesas', mesa.firebaseId),
+            {
+                status: 'livre',
+                pedido: '',
+                observacoes: '',
+                nomeGarcom: '',
+                chamouGarcom: false,
+                pedidoPronto: false,
+                concluidoCozinha: false,
+            }
+        );
+
+    } catch (error) {
+
+        console.log(
+            'Erro ao concluir pedido:',
+            error
+        );
+
+    }
+}
+ 
+    function corStatus(status) {
+        if (status === 'livre') return '#32cd32';
+        if (status === 'ocupada') return '#ff3b30';
+        return '#ffd60a';
+    }
  
     return (
-        <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.scrollContent}>
+        <View style={styles.container}>
  
-            <TouchableOpacity
-                style={styles.botaoVoltar}
-                onPress={() => navigation.navigate('LoginCozinha')}
+            <Text style={styles.titulo}>Visualização das Mesas</Text>
+ 
+            <FlatList
+                data={mesas}
+                numColumns={2}
+                keyExtractor={(item) =>
+                    item.firebaseId
+                }
+                columnWrapperStyle={{ justifyContent: 'space-between' }}
+                renderItem={({ item }) => (
+                    <View style={styles.cardContainer}>
+ 
+                        <View style={styles.cardMesa}>
+                            <Text style={styles.txtMesa}>Mesa {item.id}</Text>
+                        </View>
+ 
+                        <View style={styles.areaInferior}>
+ 
+                            <View style={styles.statusContainer}>
+                                <View
+                                    style={[
+                                        styles.statusCor,
+                                        { backgroundColor: corStatus(item.status) }
+                                    ]}
+                                />
+                                <Text style={styles.txtStatus}>{item.status}</Text>
+                            </View>
+ 
+            {item.status === 'livre' ? (
+                <Button
+                    mode="contained"
+                    style={styles.buttonCadastrar}
+                    onPress={() => navigation.navigate('MesasStack', {
+                    screen: 'CadastrarMesa',
+                    params: { mesa: item }
+            })}
             >
-                <Text style={styles.botaoVoltarTexto}>← VOLTAR</Text>
-            </TouchableOpacity>
- 
-            <Text style={styles.titulo}>PEDIDOS PENDENTES</Text>
- 
-            {pedidos.map((pedido) => {
-                const numMesa = pedido.numeroMesa || pedido.id;
-                const garcom = pedido.nomeGarcom || 'Não informado';
- 
-                return (
-                    <View key={pedido.firebaseId} style={styles.card}> // CORRIGIDO: firebaseId
- 
-                        <Text style={styles.labelMesa}>MESA {numMesa}</Text>
- 
-                        {pedido.editadoEm && (
-                            <Text style={styles.editadoTag}>✏️ PEDIDO ATUALIZADO PELO GARÇOM</Text>
-                        )}
- 
-                        <View style={styles.cardRow}>
- 
-                            <View style={styles.caixaPedido}>
-                                <Text style={styles.caixaTexto}>{pedido.pedido}</Text>
-                                {pedido.observacoes ? (
-                                    <Text style={styles.caixaObs}>Obs: {pedido.observacoes}</Text>
-                                ) : null}
-                            </View>
- 
-                            <View style={styles.colunaDir}>
-                                {/* Box do garçom */}
-                                <View style={styles.boxGarcom}>
-                                    <Text style={styles.boxGarcomTexto}>
-                                        GARÇOM:{'\n'}{garcom}
-                                    </Text>
-                                </View>
- 
-                                <TouchableOpacity
-                                    style={styles.botaoConcluir}
-                                    onPress={() => ConcluirPedido(pedido)}
-                                >
-                                    <Text style={styles.botaoConcluirTexto}>CONCLUIR{'\n'}PEDIDO</Text>
-                                </TouchableOpacity>
-                            </View>
+            Cadastrar
+            </Button>
+) : (
+    <>
+        <Button
+            mode="contained"
+            style={styles.buttonConsultar}
+            onPress={() => navigation.navigate('MesasStack', {
+                screen: 'VisualizarPedidos',
+                params: { mesa: item }
+            })}
+        >
+            Consultar Pedido
+        </Button>
+
+        <Button
+            mode="contained"
+            style={styles.buttonConcluir}
+            onPress={() => concluirPedido(item)}
+        >
+            Concluir Pedido
+        </Button>
+    </>
+)}
  
                         </View>
  
                     </View>
-                );
-            })}
+                )}
+            />
  
-            {pedidos.length === 0 && (
-                <Text style={styles.semPedidos}>Nenhum pedido pendente no momento.</Text>
-            )}
- 
-        </ScrollView>
+        </View>
     );
 }
  
 const styles = StyleSheet.create({
-    scrollContainer: {
+    container: {
         flex: 1,
         backgroundColor: '#e9b67bff',
-    },
-    scrollContent: {
-        paddingHorizontal: 20,
-        paddingVertical: 20,
-        paddingBottom: 40,
-    },
-    botaoVoltar: {
-        alignSelf: 'flex-start',
-        backgroundColor: '#e53935',
-        borderRadius: 6,
-        paddingVertical: 8,
-        paddingHorizontal: 16,
-        marginBottom: 16,
-    },
-    botaoVoltarTexto: {
-        color: '#fff',
-        fontWeight: 'bold',
-        fontSize: 13,
+        padding: 15,
     },
     titulo: {
-        fontSize: 22,
+        fontSize: 28,
         fontWeight: 'bold',
         textAlign: 'center',
-        marginBottom: 24,
-        color: '#222',
+        marginBottom: 25,
     },
-    card: {
-        marginBottom: 28,
+    cardContainer: {
+        width: '48%',
+        marginBottom: 30,
     },
-    labelMesa: {
-        fontSize: 15,
+    cardMesa: {
+        height: 160,
+        backgroundColor: '#f5f5f5',
+        borderWidth: 3,
+        borderColor: '#000',
+        borderRadius: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    txtMesa: {
+        fontSize: 30,
         fontWeight: 'bold',
-        color: '#222',
-        marginBottom: 4,
     },
-    editadoTag: {
-        fontSize: 11,
-        color: '#1565C0',
-        fontWeight: 'bold',
-        marginBottom: 6,
+    areaInferior: {
+        marginTop: 15,
+        gap: 15,
     },
-    cardRow: {
+    statusContainer: {
         flexDirection: 'row',
-        gap: 12,
-        alignItems: 'flex-start',
-    },
-    caixaPedido: {
-        flex: 1,
-        backgroundColor: '#d9d9d9',
-        borderRadius: 6,
-        padding: 12,
-        minHeight: 110,
-    },
-    caixaTexto: {
-        fontSize: 14,
-        color: '#222',
-        fontWeight: '500',
-    },
-    caixaObs: {
-        fontSize: 12,
-        color: '#666',
-        marginTop: 8,
-        fontStyle: 'italic',
-    },
-    colunaDir: {
+        alignItems: 'center',
         gap: 10,
-        alignItems: 'center',
     },
-    boxGarcom: {
-        backgroundColor: '#29b6f6',
-        borderRadius: 6,
-        paddingVertical: 10,
-        paddingHorizontal: 8,
-        width: 90,
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: 50,
+    statusCor: {
+        width: 30,
+        height: 30,
+        borderRadius: 8,
+        borderWidth: 2,
+        borderColor: '#000',
     },
-    boxGarcomTexto: {
-        color: '#fff',
+    txtStatus: {
+        fontSize: 18,
         fontWeight: 'bold',
-        fontSize: 11,
-        textAlign: 'center',
+        textTransform: 'capitalize',
     },
-    botaoConcluir: {
-        backgroundColor: '#e53935',
-        borderRadius: 6,
-        paddingVertical: 10,
-        paddingHorizontal: 8,
-        width: 90,
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: 50,
+    buttonCadastrar: {
+        backgroundColor: '#1565C0',
+        borderRadius: 15,
     },
-    botaoConcluirTexto: {
-        color: '#fff',
-        fontWeight: 'bold',
-        fontSize: 12,
-        textAlign: 'center',
+    buttonConsultar: {
+        backgroundColor: '#ee9a2dff',
+        borderRadius: 15,
     },
-    semPedidos: {
-        textAlign: 'center',
-        color: '#555',
-        marginTop: 40,
-        fontSize: 15,
-    },
+    buttonConcluir: {
+    backgroundColor: '#43a047',
+    borderRadius: 15,
+},
 });
  

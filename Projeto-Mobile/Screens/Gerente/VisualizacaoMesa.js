@@ -6,7 +6,7 @@ import { Button } from 'react-native-paper';
 
 import { db } from '../../Services/FirebaseConfig';
 
-import { collection,addDoc,getDocs,deleteDoc,doc } from 'firebase/firestore';
+import { collection, query, where, getDocs, updateDoc, doc } from 'firebase/firestore';
 
 export default function VisualizacaoMesa() {
 
