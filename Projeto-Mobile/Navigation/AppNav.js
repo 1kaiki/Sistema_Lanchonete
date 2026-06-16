@@ -103,32 +103,10 @@ export default function AppRoutes() {
                     name="CadastroMesasGarcom"
                     component={CadastroMesasGarcom}
                 />
-
-                <Stack.Screen
-                    name="VisualizarMesasGarcom"
-                    component={VisualizarMesasGarcom}
-                />
-
-                <Stack.Screen
-                    name="VisualizarPedidosGarcom"
-                    component={VisualizarPedidosGarcom}
-                />
-
-                <Stack.Screen
-                    name="EditarPedidosGarcom"
-                    component={EditarPedidosGarcom}
-                />
-
-                <Stack.Screen
-                    name="StatusMesaGarcom"
-                    component={StatusMesaGarcom}
-                />
-
-                <Stack.Screen
-                    name="VisualizarPedidosCozinha"
-                    component={VisualizarPedidosCozinha}
-                    options={{ headerShown: false }}
-                />
+                {/* ATENDENTE */}
+                <Stack.Screen name="ConsultarValores" component={Consultarvalores} />
+                <Stack.Screen name="ConsultarPedido" component={ConsultarPedido} />
+                
 
             </Stack.Navigator>
         </NavigationContainer>
