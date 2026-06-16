@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
 
     container: {
         flex: 1,
-        backgroundColor: '#e9b67bff',
+        backgroundColor: '#191414e1',
         justifyContent: 'center',
         alignItems: 'center',
         padding: 20,
@@ -64,19 +64,21 @@ const styles = StyleSheet.create({
 
     topo: {
         alignItems: 'center',
-        marginBottom: 60,
+        marginBottom: 40,
     },
 
     titulo: {
         fontSize: 30,
         fontWeight: 'bold',
         textAlign: 'center',
+        color: '#ffffffff',
     },
 
     subtitulo: {
         fontSize: 16,
         marginTop: 10,
         textAlign: 'center',
+        color: '#dcdcdc',
     },
 
     areaBotoes: {
@@ -88,7 +90,7 @@ const styles = StyleSheet.create({
     button: {
         width: '85%',
         maxWidth: 350,
-        backgroundColor: '#ee9a2dff',
+        backgroundColor: '#208F70',
         borderRadius: 20,
         paddingVertical: 8,
     },

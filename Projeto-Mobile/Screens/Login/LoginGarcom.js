@@ -87,17 +87,13 @@ export default function LoginGarcom({ navigation }) {
       overScrollMode="never"
     >
 
-      <View style={styles.container}>
+      <View>
 
-        <View style={styles.topo}>
-          <Text style={styles.txt_title}>
-            Login Garçom
-          </Text>
-        </View>
+        <View style={styles.topo} />
 
         <View style={styles.meio}>
           <Image
-            source={require('../../assets/restaurante.jpeg')}
+            source={require('../../assets/restaurantesemfundo.png')}
             style={styles.logo}
           />
         </View>
@@ -151,7 +147,7 @@ const styles = StyleSheet.create({
 
   container: {
     flexGrow: 1,
-    backgroundColor: '#e9b67bff',
+    backgroundColor: '#191414e1',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingVertical: 60,
@@ -172,6 +168,7 @@ const styles = StyleSheet.create({
   txt_title: {
     fontSize: 30,
     fontWeight: 'bold',
+    color: '#ffffffff',
   },
 
   logo: {
@@ -182,13 +179,13 @@ const styles = StyleSheet.create({
 
   button: {
     width: 250,
-    marginTop: 30,
-    backgroundColor: '#ee9a2dff'
+    marginTop: 50,
+    backgroundColor: '#208F70'
   },
 
   input: {
     width: 250,
-    marginBottom: 10,
+    marginBottom: 5,
     backgroundColor: '#fff',
   }
 

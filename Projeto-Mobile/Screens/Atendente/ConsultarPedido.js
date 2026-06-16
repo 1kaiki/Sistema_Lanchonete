@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
 
     container: {
         flex: 1,
-        backgroundColor: '#e9b67bff',
+        backgroundColor: '#191414e1',
         padding: 20,
     },
 
@@ -57,6 +57,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 30,
+        color: '#ffffffff',
     },
 
     card: {
@@ -68,7 +69,7 @@ const styles = StyleSheet.create({
     },
 
     cardHeader: {
-        backgroundColor: '#ee9a2dff',
+        backgroundColor: '#208F70',
         padding: 15,
         alignItems: 'center',
     },

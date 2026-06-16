@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
 
     container: {
         flex: 1,
-        backgroundColor: '#e9b67bff',
+        backgroundColor: '#191414e1',
         padding: 15,
     },
 
@@ -155,10 +155,11 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 25,
+        color: '#ffffffff',
     },
 
     buttonAdicionar: {
-        backgroundColor: '#ee9a2dff',
+        backgroundColor: '#208F70',
         marginBottom: 25,
         borderRadius: 15,
     },
@@ -210,7 +211,7 @@ const styles = StyleSheet.create({
     },
 
     button: {
-        backgroundColor: '#ee9a2dff',
+        backgroundColor: '#208F70',
         borderRadius: 15,
     },
 

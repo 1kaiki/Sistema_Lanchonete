@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native"; // ESTILIZAÇÃO NOVA
 import { Button } from 'react-native-paper';
 
 export default function TelaGerente({navigation}) {
@@ -20,8 +20,7 @@ export default function TelaGerente({navigation}) {
                 icon="clipboard-list"
                 onPress={() =>
                 navigation.navigate("PedidosDiarios")}>
-                Pedidos<br></br> Diários
-
+                Pedidos{'\n'}Diários
 
                 </Button>
 
@@ -31,7 +30,7 @@ export default function TelaGerente({navigation}) {
                 icon="cash"
                 onPress={() =>
                 navigation.navigate("LucroDiario")}>       
-                Lucro Diário<br></br> da empresa
+                Lucro Diário{'\n'}da empresa
                 </Button>
 
             </View>
@@ -48,7 +47,7 @@ export default function TelaGerente({navigation}) {
                     navigation.navigate("VisualizacaoMesa")
                     }
                 >
-                    Visualização<br></br> das Mesas
+                    Visualização{'\n'}das Mesas
                 </Button>
             </View>
         </View>
@@ -59,8 +58,10 @@ const styles = StyleSheet.create({
 
 container: {
     flex: 1,
-    backgroundColor: '#e9b67bff',
+    backgroundColor: '#191414e1', // ESTILIZAÇÃO NOVA
     padding: 20,
+    alignItems: 'center', // ESTILIZAÇÃO NOVA
+    justifyContent: 'center', // ESTILIZAÇÃO NOVA - centraliza verticalmente
 },
 
 ViewTopo: {
@@ -70,12 +71,15 @@ ViewTopo: {
 titulo_pagina: {
     fontSize: 30,
     fontWeight: 'bold',
+    color: '#ffffffff', // ESTILIZAÇÃO NOVA
 },
+
+/* topoImagem and logo removed (image taken out) */
 
 ViewBotao: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 80,
+    marginTop: 20, // ESTILIZAÇÃO NOVA - reduz distância para centralizar
     gap: 20,
 },
 
@@ -84,19 +88,18 @@ Button: {
     maxWidth: 350,
     minWidth: 160,
     borderRadius: 30,
-    backgroundColor: "#ee9a2dff",
+    backgroundColor: "#208F70", // ESTILIZAÇÃO NOVA
 },
 
 ViweButtonCentral: {
     alignItems: 'center',
-    marginTop: 180,
+    marginTop: 20, // ESTILIZAÇÃO NOVA
 },
 
 ButtonCentraL: {
     width: 220,
-    borderRadius: 0,
-    backgroundColor: "#ee9a2dff",
     borderRadius: 20,
+    backgroundColor: "#208F70", // ESTILIZAÇÃO NOVA
 }
 
 })

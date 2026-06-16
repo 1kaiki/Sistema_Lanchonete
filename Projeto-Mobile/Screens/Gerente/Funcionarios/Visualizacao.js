@@ -57,23 +57,23 @@ export default function Visualizacao() {
 
                         <Card.Content>
 
-                            <Text variant="titleMedium">
+                            <Text variant="titleMedium" style={styles.name}>
                                 {item.nome}
                             </Text>
 
-                            <Text>
+                            <Text style={styles.detail}>
                                 Cargo: {item.tipo}
                             </Text>
 
-                            <Text>
+                            <Text style={styles.detail}>
                                 CPF: {item.cpf}
                             </Text>
 
-                            <Text>
+                            <Text style={styles.detail}>
                                 Email: {item.email}
                             </Text>
 
-                            <Text>
+                            <Text style={styles.detail}>
                                 Telefone: {item.telefone}
                             </Text>
 
@@ -94,12 +94,28 @@ const styles = StyleSheet.create({
 
     container: {
         flex: 1,
-        backgroundColor: '#e9b67bff',
+        backgroundColor: '#191414e1',
         padding: 10,
     },
 
     card: {
         marginBottom: 10,
+        backgroundColor: '#2b2b2b',
+        borderRadius: 12,
+        paddingVertical: 8,
+        paddingHorizontal: 10,
+    }
+
+    ,
+    name: {
+        color: '#ffffff',
+        fontWeight: 'bold',
+        fontSize: 18,
+        marginBottom: 6,
+    },
+    detail: {
+        color: '#dcdcdc',
+        marginBottom: 4,
     }
 
 });
