@@ -19,7 +19,7 @@ import app from '../../../Services/FirebaseConfig';
 const db = getFirestore(app);
 
 export default function EditarFuncionario({ route, navigation }) {
-
+    
     const { funcionario } = route.params;
 
     const [nome, setNome] = useState(funcionario.nome);

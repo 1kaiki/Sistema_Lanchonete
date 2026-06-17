@@ -1,34 +1,54 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ScrollView, Alert } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import { useState } from 'react';
-import { database } from '../../Services/FirebaseConfig';
-import { collection, addDoc } from 'firebase/firestore';
+import { db } from '../../Services/FirebaseConfig';
+import { collection, query, where, getDocs, updateDoc, doc } from 'firebase/firestore';
 
 export default function EditarPedidosGarcom({ navigation }) {
 
     const [numeroMesa, setNumeroMesa] = useState('');
     const [novoPedido, setNovoPedido] = useState('');
+    const [novasObservacoes, setNovasObservacoes] = useState('');
+    const [carregando, setCarregando] = useState(false);
 
-    const EnviarPedido = async () => {
+    const EditarPedido = async () => {
         if (!numeroMesa || !novoPedido) {
             Alert.alert('Atenção', 'Preencha o número da mesa e o novo pedido.');
             return;
         }
+
+        setCarregando(true);
         try {
-            // TODO: Defina o nome da coleção no Firebase conforme necessário
-            // envia para a VisualizarPedidosCozinha
-            await addDoc(collection(database, 'pedidosCozinha'), {
-                numeroMesa,
+            // Busca o documento da mesa pelo número (campo 'id' numérico)
+            const mesasRef = collection(db, 'mesas');
+            const q = query(mesasRef, where('id', '==', parseInt(numeroMesa)));
+            const querySnapshot = await getDocs(q);
+
+            if (querySnapshot.empty) {
+                Alert.alert('Mesa não encontrada', `Não há pedido registrado para a Mesa ${numeroMesa}. Cadastre primeiro no tab "Cadastrar".`);
+                setCarregando(false);
+                return;
+            }
+
+            // Atualiza o documento da mesa — reflete na cozinha automaticamente
+            const mesaDoc = querySnapshot.docs[0];
+            await updateDoc(doc(db, 'mesas', mesaDoc.id), {
                 pedido: novoPedido,
-                status: 'pendente',
-                criadoEm: new Date()
+                observacoes: novasObservacoes,
+                status: 'ocupada',
+                concluidoCozinha: false,   // reabre na cozinha
+                pedidoPronto: false,        // reseta status pronto
+                editadoEm: new Date(),
             });
-            Alert.alert('Sucesso', 'Pedido enviado para a cozinha!');
+
+            Alert.alert('Sucesso', `Pedido da Mesa ${numeroMesa} atualizado! A cozinha verá a alteração.`);
             setNumeroMesa('');
             setNovoPedido('');
+            setNovasObservacoes('');
         } catch (error) {
-            Alert.alert('Erro', 'Não foi possível enviar o pedido.');
-            console.log('Erro ao enviar pedido:', error);
+            Alert.alert('Erro', 'Não foi possível editar o pedido.');
+            console.log('Erro ao editar pedido:', error);
         }
+        setCarregando(false);
     };
 
     return (
@@ -62,8 +82,23 @@ export default function EditarPedidosGarcom({ navigation }) {
                     style={styles.txtInput}
                 />
 
-                <TouchableOpacity style={styles.botaoEnviar} onPress={EnviarPedido}>
-                    <Text style={styles.botaoTexto}>ENVIAR PEDIDO</Text>
+                <TextInput
+                    placeholder="OBSERVAÇÕES (opcional)"
+                    placeholderTextColor="#999"
+                    value={novasObservacoes}
+                    onChangeText={setNovasObservacoes}
+                    style={[styles.txtInput, styles.txtInputObs]}
+                />
+
+                <TouchableOpacity
+                    style={[styles.botaoEnviar, carregando && { opacity: 0.6 }]}
+                    onPress={EditarPedido}
+                    disabled={carregando}
+                >
+                    {carregando
+                        ? <ActivityIndicator color="#fff" />
+                        : <Text style={styles.botaoTexto}>SALVAR ALTERAÇÃO</Text>
+                    }
                 </TouchableOpacity>
 
             </View>
@@ -79,7 +114,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#f5f542',
+        backgroundColor: '#e9b67bff',
         paddingHorizontal: 30,
         paddingVertical: 40,
     },
@@ -112,6 +147,10 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         fontSize: 14,
         color: '#333',
+    },
+    txtInputObs: {
+        borderWidth: 2,
+        borderColor: '#1565C0',
     },
     botaoEnviar: {
         backgroundColor: '#e53935',

@@ -19,7 +19,8 @@ export default function StackCadastro() {
                 name="EscolhaCadastro"
                 component={EscolhaCadastro}
                 options={{
-                    title: 'Cadastro de Funcionários'
+                    title: 'Cadastro de Funcionários',
+                    headerShown: false
                 }}
             />
 

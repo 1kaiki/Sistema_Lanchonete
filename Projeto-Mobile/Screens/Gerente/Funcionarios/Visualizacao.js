@@ -118,14 +118,13 @@ export default function Visualizacao({ navigation }) {
                                     mode="contained"
                                     style={styles.botaoEditar}
 
-                                    onPress={() =>
-                                        navigation.navigate(
-                                            "EditarFuncionario",
-                                            {
-                                                funcionario: item
-                                            }
-                                        )
-                                    }
+                                    onPress={() => {
+                                        console.log("Botão editar clicado");
+                                        
+                                        navigation.navigate("EditarFuncionario", {
+                                            funcionario: item
+                                        });
+                                    }}
                                 >
                                     Editar
                                 </Button>

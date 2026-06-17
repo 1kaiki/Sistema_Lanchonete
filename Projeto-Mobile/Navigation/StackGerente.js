@@ -24,6 +24,9 @@ export default function StackGerente() {
             <Stack.Screen
                 name="TelaGerente"
                 component={TelaGerente}
+                options={{
+                    headerShown: false,
+                }}
             />
 
             <Stack.Screen
