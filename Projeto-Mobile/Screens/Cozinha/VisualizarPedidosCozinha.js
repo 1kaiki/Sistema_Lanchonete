@@ -81,30 +81,24 @@ export default function VisualizarPedidosCozinha({ navigation }) {
         return () => unsubscribe();
     }, []);
  
-    const ConcluirPedido = async (pedido) => {
-        Alert.alert(
-            'Confirmar',
-            `Concluir pedido da Mesa ${pedido.numeroMesa}?`,
-            [
-                { text: 'Cancelar', style: 'cancel' },
-                {
-                    text: 'Confirmar',
-                    onPress: async () => {
-                        try {
-                            await updateDoc(doc(db, 'mesas', pedido.firebaseId), {
-                            concluidoCozinha: true,
-                            pedidoPronto: true,
-                        });
-                            // o onSnapshot já remove o card automaticamente após o update
-                        } catch (error) {
-                            Alert.alert('Erro', 'Não foi possível concluir o pedido.');
-                            console.log('Erro ao concluir pedido:', error);
-                        }
-                    }
-                }
-            ]
-        );
-    };
+const ConcluirPedido = async (pedido) => {
+    console.log("=== ENTROU NA FUNÇÃO ===");
+    console.log(pedido);
+
+    try {
+        console.log("ANTES DO UPDATE");
+
+        await updateDoc(doc(db, "mesas", pedido.firebaseId), {
+            concluidoCozinha: true,
+            pedidoPronto: true,
+        });
+
+        console.log("UPDATE REALIZADO COM SUCESSO");
+    } catch (error) {
+        console.log("ERRO NO UPDATE");
+        console.log(error);
+    }
+};
  
     return (
         <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.scrollContent}>

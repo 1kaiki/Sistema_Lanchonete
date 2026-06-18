@@ -1,15 +1,27 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ScrollView, Alert } from 'react-native';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { db } from '../../Services/FirebaseConfig';
 import { collection, addDoc, query, where, getDocs, updateDoc, doc } from 'firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
  
 export default function CadastroMesasGarcom({ navigation, route }) {
- 
-    const nomeGarcom = route?.params?.nomeGarcom || '';
  
     const [numeroMesa, setNumeroMesa] = useState('');
     const [pedido, setPedido] = useState('');
     const [observacoes, setObservacoes] = useState('');
+    const [nomeGarcom, setNomeGarcom] = useState('');
+
+    useEffect(() => {
+    async function carregarGarcom() {
+        const nome = await AsyncStorage.getItem('nomeGarcom');
+        setNomeGarcom(nome || '');
+    }
+
+    carregarGarcom();
+}, []);
+
+    console.log("ROUTE PARAMS:", route?.params);
+    console.log("NOME GARÇOM:", nomeGarcom);
  
     const EnviarPedido = async () => {
     if (!numeroMesa || !pedido) {

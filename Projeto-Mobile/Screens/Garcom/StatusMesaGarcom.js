@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import {View,Text,StyleSheet,FlatList} from 'react-native';
 import { Button } from 'react-native-paper';
 import { db } from '../../Services/FirebaseConfig';
-
 import {collection,onSnapshot, doc, updateDoc} from 'firebase/firestore';
  
-export default function VisualizacaoMesa({ navigation }) {
- 
+export default function VisualizacaoMesa({ navigation, route }) {
+    console.log("ROUTE:", route.params);
+    const nomeGarcom = route?.params?.nomeGarcom || '';
     const [mesas, setMesas] = useState([]);
 
     useEffect(() => {
@@ -113,8 +113,11 @@ export default function VisualizacaoMesa({ navigation }) {
                     style={styles.buttonCadastrar}
                     onPress={() => navigation.navigate('MesasStack', {
                     screen: 'CadastrarMesa',
-                    params: { mesa: item }
-            })}
+    params: {
+        mesa: item,
+        nomeGarcom,
+    }
+})}
             >
             Cadastrar
             </Button>

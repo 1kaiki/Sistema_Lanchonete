@@ -13,17 +13,27 @@ const Stack = createNativeStackNavigator();
  
 // CadastroMesasGarcom entra aqui — acessível via navigate('CadastrarMesa')
 // mas sem aparecer no tab bar
-function MesasStack() {
+function MesasStack({ nomeGarcom }) {
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="VisualizarMesas" component={VisualizarMesasGarcom} />
+            <Stack.Screen
+    name="VisualizarMesas"
+>
+    {(props) => (
+        <VisualizarMesasGarcom
+            {...props}
+            nomeGarcom={nomeGarcom}
+        />
+    )}
+</Stack.Screen>
             <Stack.Screen name="VisualizarPedidos" component={VisualizarPedidosGarcom} />
             <Stack.Screen name="CadastrarMesa" component={CadastroMesasGarcom} />
         </Stack.Navigator>
     );
 }
  
-export default function GarcomNav() {
+export default function GarcomNav({ route }) {
+    const nomeGarcom = route?.params?.nomeGarcom || '';
     return (
         <Tab.Navigator
             screenOptions={{
@@ -44,12 +54,10 @@ export default function GarcomNav() {
         >
             <Tab.Screen
                 name="MesasStack"
-                component={MesasStack}
-                options={{
-                    tabBarLabel: 'Mesas',
-                    tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>📋</Text>,
-                }}
-            />
+            >
+            {() => <MesasStack nomeGarcom={nomeGarcom} />}
+            </Tab.Screen>
+            
             <Tab.Screen
                 name="EditarPedidos"
                 component={EditarPedidosGarcom}

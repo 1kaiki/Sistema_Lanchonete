@@ -4,7 +4,7 @@ import { db } from '../../Services/FirebaseConfig';
 import { collection, onSnapshot, doc, updateDoc } from 'firebase/firestore';
  
 export default function VisualizarMesasGarcom({ navigation, route }) {
- 
+    console.log(route.params);
     // Tenta pegar o nomeGarcom passado pela navegação
     const nomeGarcom = route?.params?.nomeGarcom || '';
  
