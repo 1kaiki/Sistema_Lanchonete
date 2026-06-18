@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import app from '../../Services/FirebaseConfig';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LoginGarcom({ navigation }) {
 
@@ -30,13 +31,14 @@ export default function LoginGarcom({ navigation }) {
         }
       });
 
-      if (encontrou) {
-        alert('Login realizado!');
-        // Passa o nome do garçom para o GarcomNav
-        navigation.navigate('TelaGarcom', { nomeGarcom });
-      } else {
-        alert('Email ou senha incorretos');
-      }
+  if (encontrou) {
+    await AsyncStorage.setItem('nomeGarcom', nomeGarcom);
+
+    alert('Login realizado!');
+    navigation.navigate('TelaGarcom');
+  } else {
+    alert('Email ou senha incorretos');
+    }
 
     } catch (error) {
       console.log(error);

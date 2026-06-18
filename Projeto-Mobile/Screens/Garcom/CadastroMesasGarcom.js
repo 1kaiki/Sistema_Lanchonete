@@ -1,92 +1,112 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ScrollView, Alert, ActivityIndicator } from 'react-native';
-import { useState } from 'react';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ScrollView, Alert } from 'react-native';
+import { useState, useEffect } from 'react';
 import { db } from '../../Services/FirebaseConfig';
-import { collection, query, where, getDocs, addDoc, updateDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, updateDoc, doc } from 'firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
  
 export default function CadastroMesasGarcom({ navigation, route }) {
- 
-    const nomeGarcom = route?.params?.nomeGarcom || 'Garçom';
  
     const [numeroMesa, setNumeroMesa] = useState('');
     const [pedido, setPedido] = useState('');
     const [observacoes, setObservacoes] = useState('');
-    const [carregando, setCarregando] = useState(false);
+    const [nomeGarcom, setNomeGarcom] = useState('');
+
+    useEffect(() => {
+    async function carregarGarcom() {
+        const nome = await AsyncStorage.getItem('nomeGarcom');
+        setNomeGarcom(nome || '');
+    }
+
+    carregarGarcom();
+}, []);
+
+    console.log("ROUTE PARAMS:", route?.params);
+    console.log("NOME GARÇOM:", nomeGarcom);
  
     const EnviarPedido = async () => {
-        if (!numeroMesa || !pedido) {
-            Alert.alert('Atenção', 'Preencha o número da mesa e o pedido.');
+    if (!numeroMesa || !pedido) {
+        Alert.alert('Atenção', 'Preencha o número da mesa e o pedido.');
+        return;
+    }
+
+    try {
+        const mesaNum = Number(numeroMesa);
+
+        const qMesa = query(
+            collection(db, 'mesas'),
+            where('id', '==', mesaNum)
+        );
+
+        const snapshot = await getDocs(qMesa);
+
+        if (snapshot.empty) {
+            Alert.alert(
+                'Mesa não encontrada',
+                `A mesa ${numeroMesa} não existe no sistema.`
+            );
             return;
         }
- 
-        setCarregando(true);
-        try {
-            const mesasRef = collection(db, 'mesas');
-            const q = query(mesasRef, where('id', '==', parseInt(numeroMesa)));
-            const querySnapshot = await getDocs(q);
- 
-            if (!querySnapshot.empty) {
-                const mesaDoc = querySnapshot.docs[0];
-                const dadosMesa = mesaDoc.data();
- 
-                // REGRA 1: mesa ocupada por OUTRO garçom
-                const mesaOcupadaPorOutro =
-                    dadosMesa.status === 'ocupada' &&
-                    dadosMesa.nomeGarcom &&
-                    dadosMesa.nomeGarcom !== nomeGarcom &&
-                    dadosMesa.pedido; // só bloqueia se realmente tem pedido ativo
- 
-                if (mesaOcupadaPorOutro) {
-                    Alert.alert(
-                        'Mesa Ocupada',
-                        `A Mesa ${numeroMesa} já está sendo atendida pelo garçom "${dadosMesa.nomeGarcom}". Aguarde a liberação.`
-                    );
-                    setCarregando(false);
-                    return;
-                }
- 
-                // REGRA 2: o próprio garçom já tem a mesa — permite atualizar normalmente
-                await updateDoc(doc(db, 'mesas', mesaDoc.id), {
-                    numeroMesa: parseInt(numeroMesa),
-                    pedido,
-                    observacoes,
-                    nomeGarcom,
-                    status: 'ocupada',
-                    chamouGarcom: false,
-                    pedidoPronto: false,
-                    concluidoCozinha: false,
-                    criadoEm: new Date(),
-                });
- 
-            } else {
-                // Mesa não existe ainda no Firebase — cria
-                await addDoc(collection(db, 'mesas'), {
-                    id: parseInt(numeroMesa),
-                    numeroMesa: parseInt(numeroMesa),
-                    pedido,
-                    observacoes,
-                    nomeGarcom,
-                    status: 'ocupada',
-                    chamouGarcom: false,
-                    pedidoPronto: false,
-                    concluidoCozinha: false,
-                    criadoEm: new Date(),
-                });
-            }
- 
-            Alert.alert('Sucesso', `Pedido da Mesa ${numeroMesa} enviado para a cozinha!`);
-            setNumeroMesa('');
-            setPedido('');
-            setObservacoes('');
-        } catch (error) {
-            Alert.alert('Erro', 'Não foi possível enviar o pedido.');
-            console.log('Erro ao cadastrar mesa:', error);
+
+        const mesaDoc = snapshot.docs[0];
+        const dadosMesa = mesaDoc.data();
+
+        if (
+            dadosMesa.status === 'ocupada' &&
+            dadosMesa.pedido
+        ) {
+            Alert.alert(
+                'Mesa ocupada',
+                `A mesa ${numeroMesa} já possui um pedido em andamento.`
+            );
+            return;
         }
-        setCarregando(false);
-    };
+
+        await updateDoc(
+            doc(db, 'mesas', mesaDoc.id),
+            {
+                pedido,
+                observacoes,
+                nomeGarcom,
+                status: 'ocupada',
+                chamouGarcom: false,
+                concluidoCozinha: false,
+                pedidoPronto: false,
+                criadoEm: new Date(),
+            }
+        );
+
+        Alert.alert(
+            'Sucesso',
+            'Pedido enviado com sucesso!'
+        );
+
+        setNumeroMesa('');
+        setPedido('');
+        setObservacoes('');
+
+        navigation.goBack();
+
+    } catch (error) {
+        console.log('Erro ao cadastrar pedido:', error);
+
+        Alert.alert(
+            'Erro',
+            'Não foi possível enviar o pedido.'
+        );
+    }
+};
  
     return (
         <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View style={styles.container}>
+ 
+                <TouchableOpacity
+                    style={styles.botaoVoltar}
+                    onPress={() => navigation.goBack()}
+                >
+                    <Text style={styles.botaoVoltarTexto}>← VOLTAR</Text>
+                </TouchableOpacity>
+ 
                 <View style={styles.logoContainer}>
                     <Image
                         source={require('../../assets/restaurante.jpeg')}
@@ -96,7 +116,6 @@ export default function CadastroMesasGarcom({ navigation, route }) {
                 </View>
  
                 <Text style={styles.titulo}>Cadastre a nova mesa</Text>
-                <Text style={styles.subtitulo}>Garçom: {nomeGarcom}</Text>
  
                 <TextInput
                     placeholder="NÚMERO MESA"
@@ -120,26 +139,22 @@ export default function CadastroMesasGarcom({ navigation, route }) {
                     placeholderTextColor="#999"
                     value={observacoes}
                     onChangeText={setObservacoes}
-                    style={[styles.txtInput, styles.txtInputFocused]}
+                    style={[styles.txtInput, styles.txtInputObs]}
                 />
  
-                <TouchableOpacity
-                    style={[styles.botaoEnviar, carregando && { opacity: 0.6 }]}
-                    onPress={EnviarPedido}
-                    disabled={carregando}
-                >
-                    {carregando
-                        ? <ActivityIndicator color="#fff" />
-                        : <Text style={styles.botaoTexto}>ENVIAR PEDIDO</Text>
-                    }
+                <TouchableOpacity style={styles.botaoEnviar} onPress={EnviarPedido}>
+                    <Text style={styles.botaoTexto}>ENVIAR PEDIDO</Text>
                 </TouchableOpacity>
+ 
             </View>
         </ScrollView>
     );
 }
  
 const styles = StyleSheet.create({
-    scrollContainer: { flexGrow: 1 },
+    scrollContainer: {
+        flexGrow: 1,
+    },
     container: {
         flex: 1,
         alignItems: 'center',
@@ -147,6 +162,19 @@ const styles = StyleSheet.create({
         backgroundColor: '#e9b67bff',
         paddingHorizontal: 30,
         paddingVertical: 40,
+    },
+    botaoVoltar: {
+        alignSelf: 'flex-start',
+        backgroundColor: '#e53935',
+        borderRadius: 6,
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+        marginBottom: 20,
+    },
+    botaoVoltarTexto: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 13,
     },
     logoContainer: {
         backgroundColor: '#fff',
@@ -158,9 +186,16 @@ const styles = StyleSheet.create({
         width: 160,
         height: 90,
     },
-    logo: { width: 240, height: 70 },
-    titulo: { fontSize: 20, fontWeight: 'bold', marginBottom: 4, color: '#222' },
-    subtitulo: { fontSize: 13, color: '#555', marginBottom: 20 },
+    logo: {
+        width: 240,
+        height: 70,
+    },
+    titulo: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 25,
+        color: '#222',
+    },
     txtInput: {
         width: '100%',
         height: 50,
@@ -171,7 +206,10 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#333',
     },
-    txtInputFocused: { borderWidth: 2, borderColor: '#1565C0' },
+    txtInputObs: {
+        borderWidth: 2,
+        borderColor: '#1565C0',
+    },
     botaoEnviar: {
         backgroundColor: '#e53935',
         borderRadius: 6,
@@ -179,6 +217,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: 40,
         marginTop: 10,
     },
-    botaoTexto: { color: '#fff', fontWeight: 'bold', fontSize: 15 },
+    botaoTexto: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 15,
+    },
 });
  

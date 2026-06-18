@@ -4,26 +4,50 @@ import { db } from '../../Services/FirebaseConfig';
 import { collection, onSnapshot, doc, updateDoc } from 'firebase/firestore';
  
 export default function VisualizarMesasGarcom({ navigation, route }) {
- 
+    console.log(route.params);
     // Tenta pegar o nomeGarcom passado pela navegação
     const nomeGarcom = route?.params?.nomeGarcom || '';
  
     const [mesas, setMesas] = useState([]);
  
     useEffect(() => {
-        const unsubscribe = onSnapshot(collection(db, 'mesas'), (querySnapshot) => {
-            const lista = [];
-            querySnapshot.forEach((docSnap) => {
-                const dados = docSnap.data();
-                if (dados.pedido) {
-                    lista.push({ id: docSnap.id, ...dados });
-                }
-            });
-            lista.sort((a, b) => (parseInt(a.numeroMesa) || 0) - (parseInt(b.numeroMesa) || 0));
-            setMesas(lista);
-        }, (error) => {
-            console.log('Erro ao buscar mesas:', error);
+        const unsubscribe = onSnapshot(
+    collection(db, 'mesas'),
+    (querySnapshot) => {
+
+        const lista = [];
+
+querySnapshot.forEach((docSnap) => {
+
+    const dados = docSnap.data();
+
+    if (
+        dados.status === 'ocupada' &&
+        dados.pedido &&
+        dados.id
+    ) {
+        lista.push({
+            firebaseId: docSnap.id,
+            ...dados
         });
+    }
+
+});
+
+        lista.sort((a, b) => {
+            return (a.id || 0) - (b.id || 0);
+        });
+
+        setMesas(lista);
+
+    },
+    (error) => {
+        console.log(
+            'Erro ao buscar mesas:',
+            error
+        );
+    }
+);
  
         return () => unsubscribe();
     }, []);
@@ -43,7 +67,7 @@ export default function VisualizarMesasGarcom({ navigation, route }) {
                     style: 'destructive',
                     onPress: async () => {
                         try {
-                            await updateDoc(doc(db, 'mesas', mesa.id), {
+                            await updateDoc(doc(db, 'mesas', mesa.firebaseId), {
                                 pedido: '',
                                 observacoes: '',
                                 nomeGarcom: '',
@@ -51,7 +75,8 @@ export default function VisualizarMesasGarcom({ navigation, route }) {
                                 chamouGarcom: false,
                                 pedidoPronto: false,
                                 concluidoCozinha: false,
-                            });
+                                criadoEm: null,
+});
                             Alert.alert('Mesa Liberada', `Mesa ${mesa.numeroMesa || mesa.id} está livre novamente.`);
                         } catch (error) {
                             Alert.alert('Erro', 'Não foi possível liberar a mesa.');
@@ -73,10 +98,10 @@ export default function VisualizarMesasGarcom({ navigation, route }) {
                     const ehDono = nomeGarcom && mesa.nomeGarcom === nomeGarcom;
  
                     return (
-                        <View key={mesa.id} style={styles.mesaContainer}>
+                        <View key={mesa.firebaseId} style={styles.mesaContainer}>
  
                             <View style={styles.mesaHeader}>
-                                <Text style={styles.mesaNome}>MESA {mesa.numeroMesa || mesa.id}</Text>
+                                <Text style={styles.mesaNome}>MESA {mesa.id}</Text>
                                 <Text style={styles.mesaGarcom}>👤 {mesa.nomeGarcom || 'Garçom não identificado'}</Text>
                             </View>
  

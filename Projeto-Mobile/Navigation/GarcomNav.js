@@ -11,24 +11,29 @@ import StatusMesaGarcom from '../Screens/Garcom/StatusMesaGarcom';
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
  
-// Recebe nomeGarcom e repassa para VisualizarMesas via initialParams
-function MesasStack({ route }) {
-    const nomeGarcom = route?.params?.nomeGarcom || '';
+// CadastroMesasGarcom entra aqui — acessível via navigate('CadastrarMesa')
+// mas sem aparecer no tab bar
+function MesasStack({ nomeGarcom }) {
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen
-                name="VisualizarMesas"
-                component={VisualizarMesasGarcom}
-                initialParams={{ nomeGarcom }}
-            />
+    name="VisualizarMesas"
+>
+    {(props) => (
+        <VisualizarMesasGarcom
+            {...props}
+            nomeGarcom={nomeGarcom}
+        />
+    )}
+</Stack.Screen>
             <Stack.Screen name="VisualizarPedidos" component={VisualizarPedidosGarcom} />
+            <Stack.Screen name="CadastrarMesa" component={CadastroMesasGarcom} />
         </Stack.Navigator>
     );
 }
  
 export default function GarcomNav({ route }) {
-    const nomeGarcom = route?.params?.nomeGarcom || 'Garçom';
- 
+    const nomeGarcom = route?.params?.nomeGarcom || '';
     return (
         <Tab.Navigator
             screenOptions={{
@@ -48,27 +53,14 @@ export default function GarcomNav({ route }) {
             }}
         >
             <Tab.Screen
-                name="CadastrarMesa"
-                component={CadastroMesasGarcom}
-                initialParams={{ nomeGarcom }}
-                options={{
-                    tabBarLabel: 'Cadastrar',
-                    tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>🍽️</Text>,
-                }}
-            />
-            <Tab.Screen
                 name="MesasStack"
-                component={MesasStack}
-                initialParams={{ nomeGarcom }}
-                options={{
-                    tabBarLabel: 'Mesas',
-                    tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>📋</Text>,
-                }}
-            />
+            >
+            {() => <MesasStack nomeGarcom={nomeGarcom} />}
+            </Tab.Screen>
+            
             <Tab.Screen
                 name="EditarPedidos"
                 component={EditarPedidosGarcom}
-                initialParams={{ nomeGarcom }}
                 options={{
                     tabBarLabel: 'Editar',
                     tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>✏️</Text>,
@@ -85,3 +77,4 @@ export default function GarcomNav({ route }) {
         </Tab.Navigator>
     );
 }
+ 

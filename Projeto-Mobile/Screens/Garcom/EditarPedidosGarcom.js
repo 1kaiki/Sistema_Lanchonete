@@ -1,60 +1,96 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ScrollView, Alert, ActivityIndicator } from 'react-native';
-import { useState } from 'react';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ScrollView, Alert } from 'react-native';
+import { useState, useEffect } from 'react';
 import { db } from '../../Services/FirebaseConfig';
-import { collection, query, where, getDocs, updateDoc, doc } from 'firebase/firestore';
-
-export default function EditarPedidosGarcom({ navigation }) {
-
-    const [numeroMesa, setNumeroMesa] = useState('');
+import { collection, onSnapshot, doc, updateDoc, query, where } from 'firebase/firestore';
+ 
+export default function EditarPedidosGarcom({ navigation, route }) {
+ 
+    const nomeGarcom = route?.params?.nomeGarcom || '';
+ 
+    const [mesas, setMesas] = useState([]);
+    const [mesaSelecionada, setMesaSelecionada] = useState(null);
     const [novoPedido, setNovoPedido] = useState('');
     const [novasObservacoes, setNovasObservacoes] = useState('');
-    const [carregando, setCarregando] = useState(false);
+ 
+    useEffect(() => {
+        // Busca apenas mesas ocupadas (com pedido ativo)
+const unsubscribe = onSnapshot(
+    collection(db, 'mesas'),
+    (querySnapshot) => {
 
-    const EditarPedido = async () => {
-        if (!numeroMesa || !novoPedido) {
-            Alert.alert('Atenção', 'Preencha o número da mesa e o novo pedido.');
-            return;
-        }
+        const lista = [];
 
-        setCarregando(true);
-        try {
-            // Busca o documento da mesa pelo número (campo 'id' numérico)
-            const mesasRef = collection(db, 'mesas');
-            const q = query(mesasRef, where('id', '==', parseInt(numeroMesa)));
-            const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((docSnap) => {
 
-            if (querySnapshot.empty) {
-                Alert.alert('Mesa não encontrada', `Não há pedido registrado para a Mesa ${numeroMesa}. Cadastre primeiro no tab "Cadastrar".`);
-                setCarregando(false);
-                return;
+            const dados = docSnap.data();
+
+            if (
+                dados.status === 'ocupada' &&
+                dados.pedido
+            ) {
+                lista.push({
+                    firebaseId: docSnap.id,
+                    ...dados
+                });
             }
 
-            // Atualiza o documento da mesa — reflete na cozinha automaticamente
-            const mesaDoc = querySnapshot.docs[0];
-            await updateDoc(doc(db, 'mesas', mesaDoc.id), {
+        });
+
+        lista.sort((a, b) => {
+            return (a.id || 0) - (b.id || 0);
+        });
+
+        setMesas(lista);
+
+    },
+    (error) => {
+        console.log('Erro ao buscar mesas:', error);
+    }
+);
+        return () => unsubscribe();
+    }, []);
+ 
+    const SelecionarMesa = (mesa) => {
+        setMesaSelecionada(mesa);
+        setNovoPedido(mesa.pedido || '');
+        setNovasObservacoes(mesa.observacoes || '');
+    };
+ 
+    const AtualizarPedido = async () => {
+        if (!mesaSelecionada) {
+            Alert.alert('Atenção', 'Selecione uma mesa primeiro.');
+            return;
+        }
+        if (!novoPedido) {
+            Alert.alert('Atenção', 'Preencha o novo pedido.');
+            return;
+        }
+        try {
+            await updateDoc(doc(db, 'mesas', mesaSelecionada.id), {
                 pedido: novoPedido,
                 observacoes: novasObservacoes,
-                status: 'ocupada',
-                concluidoCozinha: false,   // reabre na cozinha
-                pedidoPronto: false,        // reseta status pronto
-                editadoEm: new Date(),
             });
-
-            Alert.alert('Sucesso', `Pedido da Mesa ${numeroMesa} atualizado! A cozinha verá a alteração.`);
-            setNumeroMesa('');
+            Alert.alert('Sucesso', `Pedido da Mesa ${mesaSelecionada.numeroMesa} atualizado!`);
+            setMesaSelecionada(null);
             setNovoPedido('');
             setNovasObservacoes('');
         } catch (error) {
-            Alert.alert('Erro', 'Não foi possível editar o pedido.');
-            console.log('Erro ao editar pedido:', error);
+            Alert.alert('Erro', 'Não foi possível atualizar o pedido.');
+            console.log('Erro ao atualizar pedido:', error);
         }
-        setCarregando(false);
     };
-
+ 
     return (
         <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View style={styles.container}>
-
+ 
+                <TouchableOpacity
+                    style={styles.botaoVoltar}
+                    onPress={() => navigation.goBack()}
+                >
+                    <Text style={styles.botaoVoltarTexto}>← VOLTAR</Text>
+                </TouchableOpacity>
+ 
                 <View style={styles.logoContainer}>
                     <Image
                         source={require('../../assets/restaurante.jpeg')}
@@ -62,50 +98,70 @@ export default function EditarPedidosGarcom({ navigation }) {
                         resizeMode="contain"
                     />
                 </View>
-
+ 
                 <Text style={styles.titulo}>GERENCIE OS PEDIDOS</Text>
-
-                <TextInput
-                    placeholder="NÚMERO MESA"
-                    placeholderTextColor="#999"
-                    value={numeroMesa}
-                    onChangeText={setNumeroMesa}
-                    style={styles.txtInput}
-                    keyboardType="numeric"
-                />
-
+ 
+                {/* Lista de mesas ativas para selecionar */}
+                {mesas.length > 0 && (
+                    <View style={styles.listaMesas}>
+                        <Text style={styles.labelLista}>Selecione a mesa:</Text>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                            {mesas.map((mesa) => (
+                                <TouchableOpacity
+                                    key={mesa.id}
+                                    style={[
+                                        styles.chipMesa,
+                                        mesaSelecionada?.id === mesa.id && styles.chipMesaAtivo,
+                                    ]}
+                                    onPress={() => SelecionarMesa(mesa)}
+                                >
+                                    <Text style={[
+                                        styles.chipTexto,
+                                        mesaSelecionada?.id === mesa.id && styles.chipTextoAtivo,
+                                    ]}>
+                                        Mesa {mesa.numeroMesa}
+                                    </Text>
+                                </TouchableOpacity>
+                            ))}
+                        </ScrollView>
+                    </View>
+                )}
+ 
+                {mesas.length === 0 && (
+                    <Text style={styles.semMesas}>Nenhuma mesa com pedido ativo.</Text>
+                )}
+ 
                 <TextInput
                     placeholder="NOVO PEDIDO"
                     placeholderTextColor="#999"
                     value={novoPedido}
                     onChangeText={setNovoPedido}
                     style={styles.txtInput}
+                    editable={!!mesaSelecionada}
                 />
-
+ 
                 <TextInput
-                    placeholder="OBSERVAÇÕES (opcional)"
+                    placeholder="OBSERVAÇÕES"
                     placeholderTextColor="#999"
                     value={novasObservacoes}
                     onChangeText={setNovasObservacoes}
                     style={[styles.txtInput, styles.txtInputObs]}
+                    editable={!!mesaSelecionada}
                 />
-
+ 
                 <TouchableOpacity
-                    style={[styles.botaoEnviar, carregando && { opacity: 0.6 }]}
-                    onPress={EditarPedido}
-                    disabled={carregando}
+                    style={[styles.botaoEnviar, !mesaSelecionada && styles.botaoDesabilitado]}
+                    onPress={AtualizarPedido}
+                    disabled={!mesaSelecionada}
                 >
-                    {carregando
-                        ? <ActivityIndicator color="#fff" />
-                        : <Text style={styles.botaoTexto}>SALVAR ALTERAÇÃO</Text>
-                    }
+                    <Text style={styles.botaoTexto}>ATUALIZAR PEDIDO</Text>
                 </TouchableOpacity>
-
+ 
             </View>
         </ScrollView>
     );
 }
-
+ 
 const styles = StyleSheet.create({
     scrollContainer: {
         flexGrow: 1,
@@ -117,6 +173,19 @@ const styles = StyleSheet.create({
         backgroundColor: '#e9b67bff',
         paddingHorizontal: 30,
         paddingVertical: 40,
+    },
+    botaoVoltar: {
+        alignSelf: 'flex-start',
+        backgroundColor: '#e53935',
+        borderRadius: 6,
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+        marginBottom: 20,
+    },
+    botaoVoltarTexto: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 13,
     },
     logoContainer: {
         backgroundColor: '#fff',
@@ -138,6 +207,39 @@ const styles = StyleSheet.create({
         marginBottom: 25,
         color: '#222',
     },
+    listaMesas: {
+        width: '100%',
+        marginBottom: 20,
+    },
+    labelLista: {
+        fontSize: 13,
+        fontWeight: 'bold',
+        color: '#444',
+        marginBottom: 8,
+    },
+    chipMesa: {
+        backgroundColor: '#d9d9d9',
+        borderRadius: 20,
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+        marginRight: 8,
+    },
+    chipMesaAtivo: {
+        backgroundColor: '#1565C0',
+    },
+    chipTexto: {
+        fontWeight: 'bold',
+        color: '#333',
+        fontSize: 13,
+    },
+    chipTextoAtivo: {
+        color: '#fff',
+    },
+    semMesas: {
+        color: '#555',
+        fontSize: 14,
+        marginBottom: 20,
+    },
     txtInput: {
         width: '100%',
         height: 50,
@@ -158,6 +260,9 @@ const styles = StyleSheet.create({
         paddingVertical: 14,
         paddingHorizontal: 40,
         marginTop: 10,
+    },
+    botaoDesabilitado: {
+        backgroundColor: '#aaa',
     },
     botaoTexto: {
         color: '#fff',
