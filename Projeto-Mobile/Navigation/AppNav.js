@@ -15,6 +15,10 @@ import VisualizarPedidosGarcom from '../Screens/Garcom/VisualizarPedidosGarcom';
 // IMPORT COZINHA
 import VisualizarPedidosCozinha from '../Screens/Cozinha/VisualizarPedidosCozinha';
 
+// IMPORT ATENDENTE
+import Consultarvalores from '../Screens/Atendente/Consultarvalores';
+import ConsultarPedido from '../Screens/Atendente/ConsultarPedido';
+
 // IMPORT DOS LOGINS
 import TelaInicial from '../Screens/Login/TelaInicial';
 import EscolhaLogin from '../Screens/Login/EscolhaLogin';
@@ -103,6 +107,12 @@ export default function AppRoutes() {
                     name="CadastroMesasGarcom"
                     component={CadastroMesasGarcom}
                 />
+
+                <Stack.Screen
+                    name="VisualizarPedidosCozinha"
+                    component={VisualizarPedidosCozinha}
+                />
+
                 {/* ATENDENTE */}
                 <Stack.Screen name="ConsultarValores" component={Consultarvalores} />
                 <Stack.Screen name="ConsultarPedido" component={ConsultarPedido} />
