@@ -110,7 +110,7 @@ export default function AppRoutes() {
 
                 <Stack.Screen
                     name="VisualizarPedidosCozinha"
-                    component={VisualizarPedidosCozinha}
+                    component={VisualizarPedidosCozinha      }
                 />
 
                 {/* ATENDENTE */}
