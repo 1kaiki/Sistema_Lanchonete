@@ -75,6 +75,18 @@ export default function CadastroMesasGarcom({ navigation, route }) {
             }
         );
 
+        await addDoc(
+            collection(db, 'pedidos'),
+            {
+                numeroMesa: mesaNum,
+                pedido: pedido,
+                observacoes: observacoes,
+                nomeGarcom: nomeGarcom,
+                status: 'Em andamento',
+                criadoEm: new Date(),
+            }
+        );
+
         Alert.alert(
             'Sucesso',
             'Pedido enviado com sucesso!'

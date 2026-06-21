@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
-
 import { View,Text,StyleSheet,FlatList } from 'react-native';
-
 import { Button } from 'react-native-paper';
 
 import { db } from '../../Services/FirebaseConfig';
-
-import { collection, query, where, getDocs, updateDoc, doc } from 'firebase/firestore';
+import { collection, query, where, getDocs, updateDoc, doc, addDoc, deleteDoc} from 'firebase/firestore';
 
 export default function VisualizacaoMesa() {
 

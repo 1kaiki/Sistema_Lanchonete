@@ -16,8 +16,8 @@ import VisualizarPedidosGarcom from '../Screens/Garcom/VisualizarPedidosGarcom';
 import VisualizarPedidosCozinha from '../Screens/Cozinha/VisualizarPedidosCozinha';
 
 // IMPORT ATENDENTE
-import Consultarvalores from '../Screens/Atendente/Consultarvalores';
 import ConsultarPedido from '../Screens/Atendente/ConsultarPedido';
+import VisualizarPedidosAtendente from '../Screens/Atendente/VisualizarPedidosAtendente';
 
 // IMPORT DOS LOGINS
 import TelaInicial from '../Screens/Login/TelaInicial';
@@ -114,9 +114,24 @@ export default function AppRoutes() {
                 />
 
                 {/* ATENDENTE */}
-                <Stack.Screen name="ConsultarValores" component={Consultarvalores} />
-                <Stack.Screen name="ConsultarPedido" component={ConsultarPedido} />
-                
+        
+                <Stack.Screen
+                 name="ConsultarPedido"
+                 component={ConsultarPedido}
+                />
+
+                <Stack.Screen
+                    name="VisualizarPedidos"
+                    component={VisualizarPedidosGarcom}
+                    options={{
+                        title: 'Visualizar Pedido'
+                    }}
+                />
+
+                <Stack.Screen
+                    name="VisualizarPedidosAtendente"
+                    component={VisualizarPedidosAtendente}
+                />
 
             </Stack.Navigator>
         </NavigationContainer>

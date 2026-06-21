@@ -1,47 +1,228 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { mesas } from '../../db/DBmesas.js';
+import React, { useState, useEffect } from 'react';
+import {
+    View,
+    Text,
+    StyleSheet,
+    FlatList,
+    Alert
+} from 'react-native';
 
-export default function ConsultarPedido({ route }) {
+import { Button } from 'react-native-paper';
 
-    const { mesaId } = route.params;
-    const mesa = mesas.find((m) => m.id === mesaId);
+import { db } from '../../Services/FirebaseConfig';
+
+import {
+    collection,
+    onSnapshot,
+    doc,
+    updateDoc
+} from 'firebase/firestore';
+
+export default function ConsultarPedido({ navigation }) {
+
+    const [mesas, setMesas] = useState([]);
+
+    useEffect(() => {
+
+        const unsubscribe = onSnapshot(
+            collection(db, 'mesas'),
+            (querySnapshot) => {
+
+                const lista = [];
+
+                querySnapshot.forEach((docSnap) => {
+
+                    const dados = docSnap.data();
+
+                    lista.push({
+                        firebaseId: docSnap.id,
+                        ...dados
+                    });
+
+                });
+
+                lista.sort((a, b) => a.id - b.id);
+
+                setMesas(lista);
+
+            },
+            (error) => {
+
+                console.log(
+                    'Erro ao buscar mesas:',
+                    error
+                );
+
+            }
+        );
+
+        return () => unsubscribe();
+
+    }, []);
+
+    async function concluirPedido(mesa) {
+        console.log("Mesa recebida:", mesa);
+
+        Alert.alert(
+            'Liberar Mesa',
+            `Deseja liberar a Mesa ${mesa.id}?`,
+            [
+                {
+                    text: 'Cancelar',
+                    style: 'cancel'
+                },
+                {
+                    text: 'Sim',
+                    onPress: async () => {
+
+                        try {
+
+                            await updateDoc(
+                                doc(
+                                    db,
+                                    'mesas',
+                                    mesa.firebaseId
+                                ),
+                                {
+                                    status: 'livre',
+                                    pedido: '',
+                                    observacoes: '',
+                                    nomeGarcom: '',
+                                    chamouGarcom: false,
+                                    pedidoPronto: false,
+                                    concluidoCozinha: false,
+                                }
+                            );
+
+                            Alert.alert(
+                                'Sucesso',
+                                'Mesa liberada com sucesso!'
+                            );
+
+                        } catch (error) {
+
+                            console.log(
+                                'Erro ao liberar mesa:',
+                                error
+                            );
+
+                        }
+
+                    }
+                }
+            ]
+        );
+
+    }
+
+    function corStatus(status) {
+
+        if (status === 'livre') {
+            return '#32cd32';
+        }
+
+        if (status === 'ocupada') {
+            return '#ff3b30';
+        }
+
+        return '#ffd60a';
+
+    }
 
     return (
+
         <View style={styles.container}>
 
-            <Text style={styles.titulo}>{mesa.nome}</Text>
+            <Text style={styles.titulo}>
+                Pedidos Ativos
+            </Text>
 
-            <View style={styles.card}>
+            <FlatList
+                data={mesas}
+                numColumns={2}
+                keyExtractor={(item) =>
+                    item.firebaseId
+                }
+                columnWrapperStyle={{
+                    justifyContent: 'space-between',
+                }}
 
-                <View style={styles.cardHeader}>
-                    <Text style={styles.cardHeaderTxt}>Detalhes do Pedido</Text>
-                </View>
+                renderItem={({ item }) => (
 
-                <View style={styles.cardBody}>
+                    <View style={styles.cardContainer}>
 
-                    <View style={styles.linha}>
-                        <Text style={styles.label}>Pedido:</Text>
-                        <Text style={styles.valor}>
-                            {mesa.pedido ? mesa.pedido : 'Nenhum pedido registrado'}
-                        </Text>
+                        <View style={styles.cardMesa}>
+
+                            <Text style={styles.txtMesa}>
+                                Mesa {item.id}
+                            </Text>
+
+                        </View>
+
+                        <View style={styles.areaInferior}>
+
+                            <View style={styles.statusContainer}>
+
+                                <View
+                                    style={[
+                                        styles.statusCor,
+                                        {
+                                            backgroundColor:
+                                                corStatus(item.status)
+                                        }
+                                    ]}
+                                />
+
+                                <Text style={styles.txtStatus}>
+                                    {item.status}
+                                </Text>
+
+                            </View>
+
+                            {item.status === 'ocupada' && (
+
+                                <>
+
+                                    <Button
+                                        mode="contained"
+                                        style={styles.buttonConsultar}
+                                        onPress={() =>
+                                            navigation.navigate(
+                                                'VisualizarPedidosAtendente',
+                                                {
+                                                    mesa: item
+                                                }
+                                            )
+                                        }
+                                    >
+                                        Consultar Pedido
+                                    </Button>
+
+                                    <Button
+                                        mode="contained"
+                                        style={styles.buttonConcluir}
+                                        onPress={() =>
+                                            concluirPedido(item)
+                                        }
+                                    >
+                                        Liberar Mesa
+                                    </Button>
+
+                                </>
+
+                            )}
+
+                        </View>
+
                     </View>
 
-                    <View style={styles.divisor} />
-
-                    <View style={styles.linha}>
-                        <Text style={styles.label}>Valor:</Text>
-                        <Text style={styles.valorDestaque}>
-                            {mesa.valor ? `R$ ${mesa.valor}` : 'R$ 0,00'}
-                        </Text>
-                    </View>
-
-                </View>
-
-            </View>
+                )}
+            />
 
         </View>
+
     );
+
 }
 
 const styles = StyleSheet.create({
@@ -49,70 +230,69 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#e9b67bff',
-        padding: 20,
+        padding: 15,
     },
 
     titulo: {
         fontSize: 28,
         fontWeight: 'bold',
         textAlign: 'center',
+        marginBottom: 25,
+    },
+
+    cardContainer: {
+        width: '48%',
         marginBottom: 30,
     },
 
-    card: {
+    cardMesa: {
+        height: 160,
         backgroundColor: '#f5f5f5',
-        borderRadius: 20,
         borderWidth: 3,
         borderColor: '#000',
-        overflow: 'hidden',
-    },
-
-    cardHeader: {
-        backgroundColor: '#ee9a2dff',
-        padding: 15,
+        borderRadius: 20,
+        justifyContent: 'center',
         alignItems: 'center',
     },
 
-    cardHeaderTxt: {
-        fontSize: 20,
+    txtMesa: {
+        fontSize: 30,
         fontWeight: 'bold',
-        color: '#fff',
     },
 
-    cardBody: {
-        padding: 20,
+    areaInferior: {
+        marginTop: 15,
         gap: 15,
     },
 
-    linha: {
+    statusContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
+        gap: 10,
     },
 
-    label: {
+    statusCor: {
+        width: 30,
+        height: 30,
+        borderRadius: 8,
+        borderWidth: 2,
+        borderColor: '#000',
+    },
+
+    txtStatus: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#333',
+        textTransform: 'capitalize',
     },
 
-    valor: {
-        fontSize: 17,
-        color: '#555',
-        flexShrink: 1,
-        textAlign: 'right',
+    buttonConsultar: {
+        backgroundColor: '#ee9a2dff',
+        borderRadius: 15,
     },
 
-    valorDestaque: {
-        fontSize: 22,
-        fontWeight: 'bold',
-        color: '#32cd32',
-    },
-
-    divisor: {
-        height: 2,
-        backgroundColor: '#ddd',
-        borderRadius: 1,
+    buttonConcluir: {
+        backgroundColor: '#43a047',
+        borderRadius: 15,
     },
 
 });
