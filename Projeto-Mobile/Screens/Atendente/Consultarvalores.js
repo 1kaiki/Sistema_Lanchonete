@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react';
-
 import { View,Text,StyleSheet,FlatList } from 'react-native';
-
 import { Button } from 'react-native-paper';
 
 import { db } from '../../Services/FirebaseConfig';
-
 import { collection, getDocs } from 'firebase/firestore';
 
 export default function VisualizacaoMesa({ navigation }) {

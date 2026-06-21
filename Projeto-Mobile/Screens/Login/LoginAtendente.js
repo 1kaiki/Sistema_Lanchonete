@@ -1,23 +1,8 @@
 import React, { useState } from 'react';
 
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  ScrollView
-} from 'react-native';
-
-import {
-  Button,
-  TextInput
-} from 'react-native-paper';
-
-import {
-  getFirestore,
-  collection,
-  getDocs
-} from 'firebase/firestore';
+import {StyleSheet, Text, View, Image, ScrollView} from 'react-native';
+import {Button, TextInput} from 'react-native-paper';
+import {getFirestore, collection, getDocs} from 'firebase/firestore';
 
 import app from '../../Services/FirebaseConfig';
 
@@ -61,7 +46,7 @@ export default function LoginAtendente({ navigation }) {
         alert("Login realizado!");
 
         // tela depois do login
-        navigation.navigate("TelaGarcom");
+        navigation.navigate("ConsultarPedido");
 
       }
 
