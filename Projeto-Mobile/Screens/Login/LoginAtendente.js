@@ -72,17 +72,11 @@ export default function LoginAtendente({ navigation }) {
       overScrollMode="never"
     >
 
-      <View style={styles.container}>
-
-        <View style={styles.topo}>
-          <Text style={styles.txt_title}>
-            Login Garçom
-          </Text>
-        </View>
+      <View>
 
         <View style={styles.meio}>
           <Image
-            source={require('../../assets/restaurante.jpeg')}
+            source={require('../../assets/restaurantesemfundo.png')}
             style={styles.logo}
           />
         </View>
@@ -136,9 +130,9 @@ const styles = StyleSheet.create({
 
   container: {
     flexGrow: 1,
-    backgroundColor: '#e9b67bff',
+    backgroundColor: '#191414e1',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     paddingVertical: 60,
   },
 
@@ -157,6 +151,7 @@ const styles = StyleSheet.create({
   txt_title: {
     fontSize: 30,
     fontWeight: 'bold',
+    color: '#fff'
   },
 
   logo: {
@@ -168,7 +163,7 @@ const styles = StyleSheet.create({
   button: {
     width: 250,
     marginTop: 30,
-    backgroundColor: '#ee9a2dff'
+    backgroundColor: '#208F70'
   },
 
   input: {

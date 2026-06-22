@@ -82,18 +82,16 @@ export default function PedidoDiario() {
                                 Mesa {item.numeroMesa}
                             </Text>
 
-                            <Text>
+                            <Text style={styles.cardText}>
                                 Pedido: {item.pedido}
                             </Text>
 
-                            <Text>
+                            <Text style={styles.cardText}>
                                 Garçom: {item.nomeGarcom}
                             </Text>
 
-                            <Text>
-                                Observações:
-                                {" "}
-                                {item.observacoes || "Nenhuma"}
+                            <Text style={styles.cardText}>
+                                Observações: {item.observacoes || 'Nenhuma'}
                             </Text>
 
                         </Card.Content>
@@ -113,7 +111,7 @@ const styles = StyleSheet.create({
 
     container: {
         flex: 1,
-        backgroundColor: '#e9b67bff',
+        backgroundColor: '#191414e1',
         padding: 15
     },
 
@@ -121,16 +119,23 @@ const styles = StyleSheet.create({
         fontSize: 28,
         fontWeight: 'bold',
         textAlign: 'center',
-        marginBottom: 20
+        marginBottom: 20,
+        color: '#fff'
     },
 
     card: {
-        marginBottom: 10
+        marginBottom: 10,
+        backgroundColor: '#2a2a2a'
     },
 
     mesa: {
         fontSize: 18,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        color: '#fff'
+    },
+
+    cardText: {
+        color: '#dcdcdc'
     }
 
 });

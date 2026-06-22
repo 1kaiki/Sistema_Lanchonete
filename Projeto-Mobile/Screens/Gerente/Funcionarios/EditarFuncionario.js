@@ -105,9 +105,10 @@ const styles = StyleSheet.create({
 
     container: {
         flex: 1,
-        backgroundColor: '#e9b67bff',
+        backgroundColor: '#191414e1',
         padding: 20,
-        justifyContent: 'center'
+        justifyContent: 'center',
+        alignItems: 'center'
     },
 
     titulo: {
@@ -115,16 +116,19 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 30,
+        color: '#fff'
     },
 
     input: {
+        width: 250,
         marginBottom: 15,
         backgroundColor: '#fff'
     },
 
     button: {
-        backgroundColor: '#ee9a2dff',
+        backgroundColor: '#208F70',
         marginTop: 10,
+        width: 250,
     }
 
 });

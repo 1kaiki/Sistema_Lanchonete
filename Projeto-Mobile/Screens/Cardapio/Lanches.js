@@ -111,8 +111,8 @@ export default function Lanches() {
     <NavigationContainer>
       <Drawer.Navigator
         screenOptions={{
-          drawerLabelStyle: { fontSize: 16 },
-          drawerStyle: { backgroundColor: "#D9D9D9", width: 240 },
+          drawerLabelStyle: { fontSize: 16, color: '#fff' },
+          drawerStyle: { backgroundColor: "#191414e1", width: 240 },
         }}
       >
         <Drawer.Screen name="LanchesScreen" component={LanchesContent} options={{ title: "Lanches" }} />
@@ -128,19 +128,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "row",
-    backgroundColor: "#F2EB7B",
+    backgroundColor: "#191414e1",
   },
 
   menu: {
     width: 100,
-    backgroundColor: "#D9D9D9",
+    backgroundColor: "#191414e1",
     alignItems: "center",
     paddingTop: 10,
   },
 
   botaoAtivo: {
     width: "100%",
-    backgroundColor: "black",
+    backgroundColor: "#208F70",
     paddingVertical: 20,
     alignItems: "center",
     marginBottom: 10,
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingVertical: 20,
     alignItems: "center",
-    backgroundColor: "#F2F2F2",
+    backgroundColor: "#2a2a2a",
   },
 
   textoBotao: {
@@ -174,13 +174,13 @@ const styles = StyleSheet.create({
   titulo: {
     fontSize: 50,
     marginBottom: 30,
-    
+    color: '#fff'
   },
 
   card: {
     width: "44%",
     minHeight: 320,
-    backgroundColor: "#D9D9D9",
+    backgroundColor: "#2a2a2a",
     margin: 8,
     padding: 0,
     overflow: "hidden",
@@ -198,22 +198,28 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "700",
     marginBottom: 8,
+    color: '#fff'
   },
 
   itemDescription: {
     fontSize: 14,
     marginBottom: 8,
+    color: '#ddd'
   },
 
   itemPrice: {
     fontSize: 16,
-    color: "#333",
+    color: '#fff',
   },
 
   cardsContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "center",
+  },
+
+  txt: {
+    color: '#fff'
   },
 
   texto: {

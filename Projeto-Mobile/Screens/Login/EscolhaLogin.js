@@ -8,15 +8,11 @@ export default function EscolhaLogin({navigation}) {
     contentContainerStyle={styles.container}
     bounces={false}
     overScrollMode="never">
-    <View style={styles.container}>
-
-      <View style={styles.topo}>
-        <Text style={styles.txt_title}>Restaurante Garcia</Text>
-      </View>
+    <View>
 
       <View style={styles.meio}>
         <Image
-          source={require('../../assets/restaurante.jpeg')}
+          source={require('../../assets/restaurantesemfundo.png')}
           style={styles.logo}
         />
       </View>
@@ -56,9 +52,9 @@ export default function EscolhaLogin({navigation}) {
 const styles = StyleSheet.create({
   container: {
   flexGrow: 1,
-  backgroundColor: '#e9b67bff',
+  backgroundColor: '#191414e1',
   alignItems: 'center',
-  justifyContent: 'space-between',
+  justifyContent: 'center',
   paddingVertical: 60,
 },
 
@@ -78,6 +74,7 @@ baixo: {
   txt_title: {
     fontSize: 30,
     fontWeight: 'bold',
+    color: '#fff'
   },
 
   logo: {
@@ -88,8 +85,8 @@ baixo: {
 
   button: {
     width: 250,
-    marginTop: 50,
-    backgroundColor: '#ee9a2dff'
+    marginTop: 30,
+    backgroundColor: '#208F70'
   },
   ScrollView:{
     flex: 1

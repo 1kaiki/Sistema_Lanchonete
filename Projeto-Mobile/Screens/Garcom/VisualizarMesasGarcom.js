@@ -91,7 +91,7 @@ querySnapshot.forEach((docSnap) => {
     return (
         <ScrollView style={styles.scrollContainer}>
             <View style={styles.container}>
- 
+
                 <Text style={styles.titulo}>MESAS ATENDIDAS</Text>
  
                 {mesas.map((mesa) => {
@@ -181,9 +181,9 @@ querySnapshot.forEach((docSnap) => {
 }
  
 const styles = StyleSheet.create({
-    scrollContainer: { flex: 1, backgroundColor: '#e9b67bff' },
-    container: { flex: 1, paddingHorizontal: 20, paddingVertical: 20, backgroundColor: '#e9b67bff' },
-    titulo: { fontSize: 22, fontWeight: 'bold', textAlign: 'center', marginBottom: 20, color: '#222' },
+    scrollContainer: { flex: 1, backgroundColor: '#191414e1' },
+    container: { flex: 1, paddingHorizontal: 20, paddingVertical: 20, backgroundColor: '#191414e1' },
+    titulo: { fontSize: 22, fontWeight: 'bold', textAlign: 'center', marginBottom: 20, color: '#fff' },
     mesaContainer: { marginBottom: 20 },
     mesaHeader: {
         flexDirection: 'row',
@@ -191,19 +191,19 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 6,
     },
-    mesaNome: { fontSize: 14, fontWeight: 'bold', color: '#222' },
-    mesaGarcom: { fontSize: 12, color: '#555', fontStyle: 'italic' },
+    mesaNome: { fontSize: 14, fontWeight: 'bold', color: '#fff' },
+    mesaGarcom: { fontSize: 12, color: '#dcdcdc', fontStyle: 'italic' },
     mesaRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 12 },
     mesaCard: {
         flex: 1,
-        backgroundColor: '#d9d9d9',
+        backgroundColor: '#2a2a2a',
         borderRadius: 6,
         padding: 12,
     },
     mesaCardBloqueada: {
         opacity: 0.75,
         borderWidth: 1,
-        borderColor: '#bbb',
+        borderColor: '#444',
     },
     bannerBloqueado: {
         backgroundColor: '#ffcc00',
@@ -213,13 +213,13 @@ const styles = StyleSheet.create({
         marginBottom: 8,
         alignSelf: 'flex-start',
     },
-    bannerTexto: { fontSize: 11, fontWeight: 'bold', color: '#333' },
-    statusTexto: { fontSize: 12, fontWeight: 'bold', color: '#333', marginBottom: 6 },
-    pedidoLabel: { fontSize: 11, fontWeight: 'bold', color: '#555', marginTop: 4 },
-    pedidoTexto: { fontSize: 13, color: '#222', marginBottom: 4 },
-    obsTexto: { fontSize: 12, color: '#666', fontStyle: 'italic', marginBottom: 4 },
+    bannerTexto: { fontSize: 11, fontWeight: 'bold', color: '#222' },
+    statusTexto: { fontSize: 12, fontWeight: 'bold', color: '#fff', marginBottom: 6 },
+    pedidoLabel: { fontSize: 11, fontWeight: 'bold', color: '#dcdcdc', marginTop: 4 },
+    pedidoTexto: { fontSize: 13, color: '#fff', marginBottom: 4 },
+    obsTexto: { fontSize: 12, color: '#dcdcdc', fontStyle: 'italic', marginBottom: 4 },
     botaoVisualizar: {
-        backgroundColor: '#222',
+        backgroundColor: '#208F70',
         borderRadius: 4,
         paddingVertical: 8,
         alignItems: 'center',
@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
     },
     botaoVisualizarTexto: { color: '#fff', fontWeight: 'bold', fontSize: 12 },
     botaoLiberar: {
-        backgroundColor: '#43a047',
+        backgroundColor: '#208F70',
         borderRadius: 4,
         paddingVertical: 8,
         alignItems: 'center',
@@ -243,6 +243,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     indicadorTexto: { color: '#fff', fontWeight: 'bold', fontSize: 9, textAlign: 'center' },
-    semMesas: { textAlign: 'center', color: '#555', marginTop: 30, fontSize: 15 },
+    semMesas: { textAlign: 'center', color: '#dcdcdc', marginTop: 30, fontSize: 15 },
 });
  

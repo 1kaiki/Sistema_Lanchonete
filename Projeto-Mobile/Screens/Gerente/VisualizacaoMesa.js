@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
 
     container: {
         flex: 1,
-        backgroundColor: '#e9b67bff',
+        backgroundColor: '#191414e1',
         padding: 15,
     },
 
@@ -199,10 +199,11 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 25,
+        color: '#fff'
     },
 
     buttonAdicionar: {
-        backgroundColor: '#ee9a2dff',
+        backgroundColor: '#208F70',
         marginBottom: 25,
         borderRadius: 15,
     },
@@ -214,9 +215,8 @@ const styles = StyleSheet.create({
 
     cardMesa: {
         height: 160,
-        backgroundColor: '#f5f5f5',
-        borderWidth: 3,
-        borderColor: '#000',
+        backgroundColor: '#2a2a2a',
+        borderWidth: 0,
         borderRadius: 20,
         justifyContent: 'center',
         alignItems: 'center',
@@ -225,6 +225,7 @@ const styles = StyleSheet.create({
     txtMesa: {
         fontSize: 30,
         fontWeight: 'bold',
+        color: '#fff'
     },
 
     areaInferior: {
@@ -253,7 +254,7 @@ const styles = StyleSheet.create({
     },
 
     button: {
-        backgroundColor: '#ee9a2dff',
+        backgroundColor: '#208F70',
         borderRadius: 15,
     },
 

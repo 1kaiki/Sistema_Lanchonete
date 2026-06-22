@@ -92,23 +92,23 @@ export default function Visualizacao({ navigation }) {
 
                         <Card.Content>
 
-                            <Text variant="titleMedium">
+                            <Text variant="titleMedium" style={styles.texto}>
                                 {item.nome}
                             </Text>
 
-                            <Text>
+                            <Text style={styles.texto}>
                                 Cargo: {item.tipo}
                             </Text>
 
-                            <Text>
+                            <Text style={styles.texto}>
                                 CPF: {item.cpf}
                             </Text>
 
-                            <Text>
+                            <Text style={styles.texto}>
                                 Email: {item.email}
                             </Text>
 
-                            <Text>
+                            <Text style={styles.texto}>
                                 Telefone: {item.telefone}
                             </Text>
 
@@ -159,12 +159,13 @@ const styles = StyleSheet.create({
 
     container: {
         flex: 1,
-        backgroundColor: '#e9b67bff',
+        backgroundColor: '#191414e1',
         padding: 10,
     },
 
     card: {
         marginBottom: 10,
+        backgroundColor: '#2a2a2a'
     },
 
     areaBotoes: {
@@ -175,12 +176,16 @@ const styles = StyleSheet.create({
 
     botaoEditar: {
         flex: 1,
-        backgroundColor: '#2196F3',
+        backgroundColor: '#208F70',
     },
 
     botaoExcluir: {
         flex: 1,
         backgroundColor: '#F44336',
+    }
+
+    ,texto: {
+        color: '#fff'
     }
 
 });

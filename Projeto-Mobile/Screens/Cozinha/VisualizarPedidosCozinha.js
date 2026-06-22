@@ -161,7 +161,7 @@ const ConcluirPedido = async (pedido) => {
 const styles = StyleSheet.create({
     scrollContainer: {
         flex: 1,
-        backgroundColor: '#e9b67bff',
+        backgroundColor: '#191414e1',
     },
     scrollContent: {
         paddingHorizontal: 20,
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     },
     botaoVoltar: {
         alignSelf: 'flex-start',
-        backgroundColor: '#e53935',
+        backgroundColor: '#208F70',
         borderRadius: 6,
         paddingVertical: 8,
         paddingHorizontal: 16,
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 24,
-        color: '#222',
+        color: '#fff',
     },
     card: {
         marginBottom: 28,
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     labelMesa: {
         fontSize: 13,
         fontWeight: 'bold',
-        color: '#444',
+        color: '#fff',
         marginBottom: 8,
     },
     cardRow: {
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     },
     caixaPedido: {
         flex: 1,
-        backgroundColor: '#d9d9d9',
+        backgroundColor: '#2a2a2a',
         borderRadius: 6,
         padding: 12,
         minHeight: 110,
@@ -212,11 +212,11 @@ const styles = StyleSheet.create({
     },
     caixaTexto: {
         fontSize: 13,
-        color: '#333',
+        color: '#fff',
     },
     caixaObs: {
         fontSize: 12,
-        color: '#666',
+        color: '#dcdcdc',
         marginTop: 6,
         fontStyle: 'italic',
     },
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     boxGarcom: {
-        backgroundColor: '#29b6f6',
+        backgroundColor: '#208F70',
         borderRadius: 6,
         paddingVertical: 10,
         paddingHorizontal: 12,
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     botaoConcluir: {
-        backgroundColor: '#e53935',
+        backgroundColor: '#208F70',
         borderRadius: 6,
         paddingVertical: 10,
         paddingHorizontal: 12,
@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
     },
     semPedidos: {
         textAlign: 'center',
-        color: '#555',
+        color: '#dcdcdc',
         marginTop: 40,
         fontSize: 15,
     },

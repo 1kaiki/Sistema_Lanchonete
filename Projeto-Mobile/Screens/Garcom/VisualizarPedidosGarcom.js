@@ -105,17 +105,17 @@ export default function VisualizarPedidosGarcom({ navigation, route }) {
 const styles = StyleSheet.create({
     scrollContainer: {
         flex: 1,
-        backgroundColor: '#e9b67bff',
+        backgroundColor: '#191414e1',
     },
     container: {
         flex: 1,
         paddingHorizontal: 20,
         paddingVertical: 20,
-        backgroundColor: '#e9b67bff',
+        backgroundColor: '#191414e1',
     },
     botaoVoltar: {
         alignSelf: 'flex-start',
-        backgroundColor: '#e53935',
+        backgroundColor: '#208F70',
         borderRadius: 6,
         paddingVertical: 8,
         paddingHorizontal: 16,
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 20,
-        color: '#222',
+        color: '#fff',
     },
     pedidoContainer: {
         marginBottom: 30,
@@ -139,18 +139,18 @@ const styles = StyleSheet.create({
     labelMesa: {
         fontSize: 15,
         fontWeight: 'bold',
-        color: '#222',
+        color: '#fff',
         marginBottom: 10,
     },
     labelTipo: {
         fontSize: 12,
         fontWeight: 'bold',
-        color: '#444',
+        color: '#dcdcdc',
         marginBottom: 5,
         marginTop: 10,
     },
     caixaInfo: {
-        backgroundColor: '#d9d9d9',
+        backgroundColor: '#2a2a2a',
         borderRadius: 6,
         padding: 12,
         minHeight: 60,
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     },
     caixaTexto: {
         fontSize: 13,
-        color: '#333',
+        color: '#fff',
     },
     rowStatus: {
         flexDirection: 'row',
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     },
     botaoGarcom: {
         flex: 1,
-        backgroundColor: '#222',
+        backgroundColor: '#208F70',
         borderRadius: 6,
         paddingVertical: 10,
         alignItems: 'center',
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     },
     semPedidos: {
         textAlign: 'center',
-        color: '#555',
+        color: '#dcdcdc',
         marginTop: 30,
         fontSize: 15,
     },

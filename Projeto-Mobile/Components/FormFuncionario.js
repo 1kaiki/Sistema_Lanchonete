@@ -108,9 +108,10 @@ const styles = StyleSheet.create({
 
     container: {
         flex: 1,
-        backgroundColor: '#e9b67bff',
+        backgroundColor: '#191414e1',
         justifyContent: 'center',
         padding: 20,
+        alignItems: 'center'
     },
 
     titulo: {
@@ -118,17 +119,20 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 30,
+        color: '#fff'
     },
 
     input: {
+        width: 250,
         marginBottom: 15,
         backgroundColor: '#fff',
     },
 
     button: {
-        backgroundColor: '#ee9a2dff',
+        backgroundColor: '#208F70',
         borderRadius: 20,
         marginTop: 10,
+        width: 250
     },
 
 });

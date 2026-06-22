@@ -42,31 +42,28 @@ export default function LoginCozinha({ navigation }) {
       contentContainerStyle={styles.container}
       bounces={false}
       overScrollMode="never">
-      <View style={styles.container}>
-
-        <View style={styles.topo}>
-          <Text style={styles.txt_title}>Login Cozinha</Text>
-        </View>
+      <View>
 
         <View style={styles.meio}>
           <Image
-            source={require('../../assets/restaurante.jpeg')}
+            source={require('../../assets/restaurantesemfundo.png')}
             style={styles.logo}
           />
         </View>
 
         <View style={styles.baixo}>
           <TextInput
+            label='Email'
             style={styles.input}
-            placeholder='Login'
             value={email}
             onChangeText={setEmail}
           />
           <TextInput
-            placeholder='Senha'
+            label='Senha'
             value={senha}
             onChangeText={setSenha}
             secureTextEntry
+            style={styles.input}
           />
 
           <Button mode="contained" style={styles.button} onPress={logarFuncionario}>
@@ -86,9 +83,9 @@ export default function LoginCozinha({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: '#e9b67bff',
+    backgroundColor: '#191414e1',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     paddingVertical: 60,
   },
   topo: {
@@ -103,6 +100,7 @@ const styles = StyleSheet.create({
   txt_title: {
     fontSize: 30,
     fontWeight: 'bold',
+    color: '#fff'
   },
   logo: {
     width: 200,
@@ -111,13 +109,15 @@ const styles = StyleSheet.create({
   },
   button: {
     width: 250,
-    marginTop: 50,
-    backgroundColor: '#ee9a2dff'
+    marginTop: 30,
+    backgroundColor: '#208F70'
   },
   ScrollView: {
     flex: 1
   },
   input: {
-    marginBottom: 5
+    width: 250,
+    marginBottom: 10,
+    backgroundColor: '#fff'
   }
 });

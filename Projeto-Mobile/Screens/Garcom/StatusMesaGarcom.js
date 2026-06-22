@@ -157,7 +157,7 @@ export default function VisualizacaoMesa({ navigation, route }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#e9b67bff',
+        backgroundColor: '#191414e1',
         padding: 15,
     },
     titulo: {
@@ -165,6 +165,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 25,
+        color: '#fff',
     },
     cardContainer: {
         width: '48%',
@@ -172,9 +173,8 @@ const styles = StyleSheet.create({
     },
     cardMesa: {
         height: 160,
-        backgroundColor: '#f5f5f5',
-        borderWidth: 3,
-        borderColor: '#000',
+        backgroundColor: '#2a2a2a',
+        borderWidth: 0,
         borderRadius: 20,
         justifyContent: 'center',
         alignItems: 'center',
@@ -182,6 +182,7 @@ const styles = StyleSheet.create({
     txtMesa: {
         fontSize: 30,
         fontWeight: 'bold',
+        color: '#fff',
     },
     areaInferior: {
         marginTop: 15,
@@ -203,18 +204,19 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         textTransform: 'capitalize',
+        color: '#fff',
     },
     buttonCadastrar: {
-        backgroundColor: '#1565C0',
+        backgroundColor: '#208F70',
         borderRadius: 15,
     },
     buttonConsultar: {
-        backgroundColor: '#ee9a2dff',
+        backgroundColor: '#208F70',
         borderRadius: 15,
     },
     buttonConcluir: {
-    backgroundColor: '#43a047',
-    borderRadius: 15,
-},
+        backgroundColor: '#208F70',
+        borderRadius: 15,
+    },
 });
  

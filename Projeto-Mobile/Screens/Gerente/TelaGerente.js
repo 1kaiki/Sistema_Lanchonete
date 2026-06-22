@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
 
 container: {
     flex: 1,
-    backgroundColor: '#e9b67bff',
+    backgroundColor: '#191414e1',
     padding: 20,
 },
 
@@ -70,6 +70,7 @@ ViewTopo: {
 titulo_pagina: {
     fontSize: 30,
     fontWeight: 'bold',
+    color: '#fff'
 },
 
 ViewBotao: {
@@ -84,7 +85,7 @@ Button: {
     maxWidth: 350,
     minWidth: 160,
     borderRadius: 30,
-    backgroundColor: "#ee9a2dff",
+    backgroundColor: "#208F70",
 },
 
 ViweButtonCentral: {
@@ -95,7 +96,7 @@ ViweButtonCentral: {
 ButtonCentraL: {
     width: 220,
     borderRadius: 0,
-    backgroundColor: "#ee9a2dff",
+    backgroundColor: "#208F70",
     borderRadius: 20,
 }
 
