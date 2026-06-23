@@ -18,6 +18,7 @@ import VisualizarPedidosCozinha from '../Screens/Cozinha/VisualizarPedidosCozinh
 // IMPORT ATENDENTE
 import ConsultarPedido from '../Screens/Atendente/ConsultarPedido';
 import VisualizarPedidosAtendente from '../Screens/Atendente/VisualizarPedidosAtendente';
+import PagamentoMesa from '../Screens/Atendente/PagamentoMesa';
 
 // IMPORT DOS LOGINS
 import TelaInicial from '../Screens/Login/TelaInicial';
@@ -131,6 +132,11 @@ export default function AppRoutes() {
                 <Stack.Screen
                     name="VisualizarPedidosAtendente"
                     component={VisualizarPedidosAtendente}
+                />
+
+                <Stack.Screen
+                    name="PagamentoMesa"
+                    component={PagamentoMesa}
                 />
 
             </Stack.Navigator>

@@ -1,20 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
 
-import {
-    Card,
-    Text,
-    Button
-} from 'react-native-paper';
+import {Card, Text, Button} from 'react-native-paper';
 
-import {
-    getFirestore,
-    collection,
-    getDocs,
-    deleteDoc,
-    doc
-} from 'firebase/firestore';
-
+import {getFirestore, collection, getDocs, deleteDoc, doc} from 'firebase/firestore';
 import app from '../../../Services/FirebaseConfig';
 
 const db = getFirestore(app);

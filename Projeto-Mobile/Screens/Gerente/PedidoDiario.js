@@ -1,24 +1,9 @@
-import React, {
-    useEffect,
-    useState
-} from 'react';
+import React, {useEffect, useState} from 'react';
+import {View, Text, FlatList, StyleSheet} from 'react-native';
 
-import {
-    View,
-    Text,
-    FlatList,
-    StyleSheet
-} from 'react-native';
+import {Card} from 'react-native-paper';
 
-import {
-    Card
-} from 'react-native-paper';
-
-import {
-    collection,
-    onSnapshot
-} from 'firebase/firestore';
-
+import {collection,onSnapshot} from 'firebase/firestore';
 import { db } from '../../Services/FirebaseConfig';
 
 export default function PedidoDiario() {

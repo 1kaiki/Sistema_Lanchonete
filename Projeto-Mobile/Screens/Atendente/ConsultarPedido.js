@@ -202,7 +202,12 @@ export default function ConsultarPedido({ navigation }) {
                                         mode="contained"
                                         style={styles.buttonConcluir}
                                         onPress={() =>
-                                            concluirPedido(item)
+                                            navigation.navigate(
+                                                'PagamentoMesa',
+                                                {
+                                                    mesa: item
+                                                }
+                                            )
                                         }
                                     >
                                         Liberar Mesa

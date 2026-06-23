@@ -1,19 +1,9 @@
 import React, { useState } from 'react';
 
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native'
+import {TextInput, Button, Text} from 'react-native-paper';
 
-import {
-    TextInput,
-    Button,
-    Text
-} from 'react-native-paper';
-
-import {
-    getFirestore,
-    doc,
-    updateDoc
-} from 'firebase/firestore';
-
+import {getFirestore, doc, updateDoc} from 'firebase/firestore';
 import app from '../../../Services/FirebaseConfig';
 
 const db = getFirestore(app);
